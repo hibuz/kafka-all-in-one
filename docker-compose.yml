@@ -212,7 +212,7 @@ services:
 
 ### 이하 추가된 설정
   kafka-ui:
-    image: provectuslabs/kafka-ui:0.7.2
+    image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     depends_on:
       - broker
@@ -243,21 +243,21 @@ services:
       - '--sql_mode='
       - '--server-id=1'
       - '--max_allowed_packet=1073741824'
-      - '--log-bin=/var/log/mysql/bin.log'
-      - '--expire_logs_days=10'
+     # - '--log-bin=/var/log/mysql/bin.log'
+     # - '--expire_logs_days=10'
       - '--gtid-mode=ON'
       - '--enforce-gtid-consistency=ON'
     ports:
       - 3306:3306
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - mysql-log:/var/log/mysql
+#    volumes:
+      #- mysql-data:/var/lib/mysql
+      #- mysql-log:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root_pw123!
       MYSQL_USER: myuser
       MYSQL_PASSWORD: myuser_pw123!
       MYSQL_DATABASE: tstdb
  
-volumes:
-  mysql-data:
-  mysql-log:
+#volumes:
+#  mysql-data:
+#  mysql-log:
