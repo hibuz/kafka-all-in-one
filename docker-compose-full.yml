@@ -58,7 +58,8 @@ services:
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:
@@ -140,7 +141,7 @@ services:
       - prometheus
       - alertmanager
     ports:
-      - "9021:9021"
+      - "9021:8080"
     volumes:
       - ./vol/config:/mnt/config
     environment:
@@ -159,7 +160,7 @@ services:
       CONTROL_CENTER_PROMETHEUS_RULES_FILE: /mnt/config/trigger_rules-generated.yml
       CONTROL_CENTER_ALERTMANAGER_URL: http://alertmanager:9093
       CONTROL_CENTER_ALERTMANAGER_CONFIG_FILE: /mnt/config/alertmanager-generated.yml
-      PORT: 9021
+      CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:8.0.0
@@ -351,7 +352,7 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U pguser" ]
+      test: [ "CMD-SHELL", "pg_isready -U pguser -d pgdb" ]
       interval: 10s
       timeout: 5s
       retries: 5
