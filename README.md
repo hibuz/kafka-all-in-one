@@ -6,18 +6,36 @@
 
 ### command
 ```bash
-docker exec -it -u root control-center bash
+# start containers
+docker compose up
 
-microdnf install dnf
+# stop containers ()
+docker compose down -v
 
-dnf install net-tools
-
-dnf install procps-ng
+[+] Running 3/3
+ ✔ Container hbase         Removed
+ ✔ Volume hbase_hbase-vol  Removed
+ ✔ Network hbase_default   Removed
 
 ```
 
-#### Installed default connectors
-```
+
+## Reference
+### Visit 
+- Kafka UI: http://localhost:8989
+
+### Installed default connectors
+```bash
+
+docker exec -it -u root broker bash
+
+# curl
+microdnf install -y dnf
+
+dnf install -y net-tools
+
+dnf install -y procps-ng
+
 curl connect:8083/connector-plugins
 
 [

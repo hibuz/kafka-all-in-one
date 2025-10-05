@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.0.0
+    image: confluentinc/cp-server:8.0.1
     hostname: broker
     container_name: broker
     ports:
@@ -54,7 +54,7 @@ services:
       KAFKA_CONFLUENT_CONSUMER_LAG_EMITTER_ENABLED: "true"
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.0.0
+    image: confluentinc/cp-schema-registry:8.0.1
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -96,7 +96,7 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.0.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.1.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connect/jars"
@@ -104,7 +104,7 @@ services:
       - ./build:/usr/share/kafka-connect/jars
 
   prometheus:
-    image: confluentinc/cp-enterprise-prometheus:2.2.0
+    image: confluentinc/cp-enterprise-prometheus:8.0.1
     hostname: cp-enterprise-prometheus
     container_name: prometheus
     volumes:
@@ -116,7 +116,7 @@ services:
       SHOULD_LOG_TO_FILE: false
 
   alertmanager:
-    image: confluentinc/cp-enterprise-alertmanager:2.2.0
+    image: confluentinc/cp-enterprise-alertmanager:8.0.1
     hostname: cp-enterprise-alertmanager
     container_name: alertmanager
     depends_on:
@@ -130,7 +130,7 @@ services:
       SHOULD_LOG_TO_FILE: false
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center-next-gen:2.2.0
+    image: confluentinc/cp-enterprise-control-center-next-gen:8.0.1
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -163,7 +163,7 @@ services:
       CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.0.0
+    image: confluentinc/cp-ksqldb-server:8.0.1
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -186,7 +186,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:8.0.0
+    image: confluentinc/cp-ksqldb-cli:8.0.1
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -196,7 +196,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:8.0.0
+    image: confluentinc/ksqldb-examples:8.0.1
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -218,7 +218,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.0.0
+    image: confluentinc/cp-kafka-rest:8.0.1
     depends_on:
       - broker
       - schema-registry
@@ -293,7 +293,7 @@ services:
       #SPRING_SECURITY_USER_PASSWORD: pass
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.0.0
+    image: confluentinc/cp-server:8.0.1
     volumes:
        - ./data:/data
     depends_on:
@@ -317,7 +317,7 @@ services:
     command: bash -c '/connectors/start.sh'
 
   mysql:
-    image: mysql:9.3.0
+    image: mysql:9.4.0
     hostname: mysql
     container_name: mysql
     command:
@@ -344,13 +344,13 @@ services:
       MYSQL_PASSWORD: myuser_pw123!
 
   postgres:
-    image: postgres:17.5
+    image: postgres:18.0
     hostname: postgres
     container_name: postgres
     ports:
       - "5432:5432"
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-vol:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U pguser -d pgdb" ]
       interval: 10s
@@ -362,6 +362,5 @@ services:
       POSTGRES_PASSWORD: pguser_pw123!
 
 volumes:
-  pg-data:
-  #mysql-data:
-  #mysql-log:
+  pg-vol: {}
+  mysql-vol: {}

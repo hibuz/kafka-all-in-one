@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.0.0
+    image: confluentinc/cp-server:8.0.1
     hostname: broker
     container_name: broker
     ports:
@@ -29,7 +29,7 @@ services:
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.0.0
+    image: confluentinc/cp-schema-registry:8.0.1
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -40,7 +40,7 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
- 
+
   connect:
     image: cnfldemos/cp-server-connect-datagen:0.6.4-7.6.0
     hostname: connect
@@ -65,7 +65,7 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.0.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.1.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connect/jars"
@@ -73,7 +73,7 @@ services:
       - ./build:/usr/share/kafka-connect/jars
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.0.0
+    image: confluentinc/cp-ksqldb-server:8.0.1
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -112,7 +112,7 @@ services:
       KAFKA_CLUSTERS_0_KSQLDBSERVER: http://ksqldb-server:8088
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.0.0
+    image: confluentinc/cp-server:8.0.1
     volumes:
        - ./data:/data
     depends_on:
@@ -124,7 +124,7 @@ services:
                kafka-console-producer --bootstrap-server broker:29092 --topic users < /data/users.json'"
 
   mysql:
-    image: mysql:9.3.0
+    image: mysql:9.4.0
     hostname: mysql
     container_name: mysql
     command:
@@ -135,10 +135,15 @@ services:
       - '--sql_mode='
       - '--server-id=1'
       - '--max_allowed_packet=1073741824'
+      - '--log-bin=/var/log/mysql/bin.log'
+      - '--expire_logs_days=10'
       - '--gtid-mode=ON'
       - '--enforce-gtid-consistency=ON'
     ports:
       - "3306:3306"
+    volumes:
+    - mysql-vol:/var/lib/mysql
+    - mysql-vol:/var/log/mysql
     environment:
       MYSQL_DATABASE: mysqldb
       MYSQL_ROOT_PASSWORD: root_pw123!
@@ -146,17 +151,18 @@ services:
       MYSQL_PASSWORD: myuser_pw123!
 
   postgres:
-    image: postgres:17.5
+    image: postgres:18.0
     hostname: postgres
     container_name: postgres
     ports:
       - "5432:5432"
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-vol:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: pgdb
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pguser_pw123!
 
 volumes:
-  pg-data:
+  pg-vol: {}
+  mysql-vol: {}
