@@ -1,0 +1,16 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    },
+  "customizations": {
+      "vscode": {
+        "extensions": [
+          "eamodio.gitlens"
+        ],
+        "settings": {
+          "locale": "en"
+        }
+      }
+    }
+}
