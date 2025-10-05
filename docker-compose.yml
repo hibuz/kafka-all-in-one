@@ -136,14 +136,14 @@ services:
       - '--server-id=1'
       - '--max_allowed_packet=1073741824'
       - '--log-bin=/var/log/mysql/bin.log'
-      - '--expire_logs_days=10'
+      - '--binlog_expire_logs_seconds=864000' # 10일 * 24시 * 60분 * 60초
       - '--gtid-mode=ON'
       - '--enforce-gtid-consistency=ON'
     ports:
       - "3306:3306"
     volumes:
-    - mysql-vol:/var/lib/mysql
-    - mysql-vol:/var/log/mysql
+      - mysql-vol:/var/lib/mysql
+      - mysql-vol:/var/log/mysql
     environment:
       MYSQL_DATABASE: mysqldb
       MYSQL_ROOT_PASSWORD: root_pw123!
