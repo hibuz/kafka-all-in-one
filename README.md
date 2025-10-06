@@ -16,15 +16,19 @@ wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.3.
 # https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
 wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.8.4/confluentinc-kafka-connect-jdbc-10.8.4.zip
 
-tar zxf debezium-connector-mysql* -C ./build
-tar zxf debezium-connector-postgres* -C ./build
-unzip confluentinc-kafka-connect-jdbc* -d ./build
+tar zxf debezium-connector-mysql* -C ./kafka-connector
+tar zxf debezium-connector-postgres* -C ./kafka-connector
+unzip confluentinc-kafka-connect-jdbc* -d ./kafka-connector
 
 rm *-connect*
 
 # Jdbc(Source/Sink)Connector does not have mysql driver
-cp build/debezium-connector-mysql/mysql-connector-j-*.jar build/confluentinc-kafka-connect-jdbc-10.8.4/lib/
+cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.8.4/lib/
 
+# sample connector
+./gradlew shadowJar
+
+cp ./app/build/libs/*-all.jar kafka-connector
 
 # Restart connect to apply additionally installed connector plugins after server startup
 docker restart connect
