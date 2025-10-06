@@ -1,10 +1,7 @@
 # kafka-all-in-one
+A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, Kafka UI, MySQL, and PostgreSQL using Docker Compose.
 
-* https://github.com/confluentinc/cp-all-in-one
-* https://github.com/provectus/kafka-ui
-
-
-### command
+### Installation
 ```bash
 # start containers
 docker compose up
@@ -21,11 +18,13 @@ wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-j
 
 tar zxf debezium-connector-mysql* -C ./build
 tar zxf debezium-connector-postgres* -C ./build
-
 unzip confluentinc-kafka-connect-jdbc* -d ./build
+
+rm *-connect*
 
 # Jdbc(Source/Sink)Connector does not have mysql driver
 cp build/debezium-connector-mysql/mysql-connector-j-*.jar build/confluentinc-kafka-connect-jdbc-10.8.4/lib/
+
 
 # Restart connect to apply additionally installed connector plugins after server startup
 docker restart connect
@@ -105,3 +104,7 @@ docker compose down -v
  ✔ Volume kafka-all-in-one_pg-vol                  Removed
  ✔ Network kafka-all-in-one_default                Removed
 ```
+
+## References
+* https://github.com/confluentinc/cp-all-in-one
+* https://github.com/provectus/kafka-ui
