@@ -33,7 +33,8 @@ services:
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:

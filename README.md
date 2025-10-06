@@ -47,6 +47,11 @@ dnf install -y net-tools procps-ng jq
 curl connect:8083/connector-plugins | jq .
 [
   {
+    "class": "com.hibuz.kafka.connect.examples.RandomSourceConnector",
+    "type": "source",
+    "version": "1.0.0"
+  },
+  {
     "class": "io.confluent.connect.jdbc.JdbcSinkConnector",
     "type": "sink",
     "version": "10.8.4"
