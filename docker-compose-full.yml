@@ -68,7 +68,7 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   connect:
-    image: cnfldemos/cp-server-connect-datagen:0.6.4-7.6.0
+    image: cnfldemos/cp-server-connect-datagen:0.6.7-8.0.0
     hostname: connect
     container_name: connect
     depends_on:
@@ -99,9 +99,9 @@ services:
       CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.1.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connect/jars"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connector"
     volumes:
-      - ./build:/usr/share/kafka-connect/jars
+      - ./build:/usr/share/kafka-connector
 
   prometheus:
     image: confluentinc/cp-enterprise-prometheus:8.0.1
@@ -360,6 +360,9 @@ services:
       POSTGRES_DB: pgdb
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pguser_pw123!
+      PG_WAL_LEVEL: logical
+      PG_MAX_REPLICATION_SLOTS: 10
+      PG_MAX_WAL_SENDERS: 5
 
 volumes:
   pg-vol: {}

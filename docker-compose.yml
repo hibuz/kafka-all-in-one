@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.0.1
+    image: confluentinc/cp-kafka:8.0.1
     hostname: broker
     container_name: broker
     ports:
@@ -12,18 +12,18 @@ services:
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      #KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      #KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      #KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
       KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      #CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
       # Replace CLUSTER_ID with a unique base64 UUID using "bin/kafka-storage.sh random-uuid"
       # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
@@ -42,7 +42,7 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   connect:
-    image: cnfldemos/cp-server-connect-datagen:0.6.4-7.6.0
+    image: cnfldemos/kafka-connect-datagen:0.6.7-8.0.0
     hostname: connect
     container_name: connect
     depends_on:
@@ -65,12 +65,12 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.1.jar
-      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connect/jars"
+      #CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.1.jar
+      #CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      #CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connector"
     volumes:
-      - ./build:/usr/share/kafka-connect/jars
+      - ./build:/usr/share/kafka-connector
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:8.0.1
@@ -112,7 +112,7 @@ services:
       KAFKA_CLUSTERS_0_KSQLDBSERVER: http://ksqldb-server:8088
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.0.1
+    image: confluentinc/cp-kafka:8.0.1
     volumes:
        - ./data:/data
     depends_on:
@@ -162,6 +162,9 @@ services:
       POSTGRES_DB: pgdb
       POSTGRES_USER: pguser
       POSTGRES_PASSWORD: pguser_pw123!
+      PG_WAL_LEVEL: logical
+      PG_MAX_REPLICATION_SLOTS: 10
+      PG_MAX_WAL_SENDERS: 5
 
 volumes:
   pg-vol: {}
