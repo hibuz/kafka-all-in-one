@@ -1,7 +1,10 @@
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
-      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+      "ghcr.io/devcontainers/features/java:1": {
+        "version": "21"
+      }
     },
   "customizations": {
       "vscode": {
@@ -12,9 +15,6 @@
           "locale": "en"
         }
       }
-    },
-    "hostRequirements": {
-      "cpus": 4
     },
     "forwardPorts": [
         8989
