@@ -13,7 +13,7 @@ public class RandomConnectorConfig extends AbstractConfig {
 
     public static final Schema VALUE_SCHEMA = SchemaBuilder.struct().name("random_value")
             .version(1)
-            .field("value", Schema.INT8_SCHEMA)
+            .field("value", Schema.INT32_SCHEMA)
             .build();
 
     public static final String TOPIC_CONFIG = "topic";

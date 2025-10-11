@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 
@@ -45,12 +46,15 @@ public class RandomSourceTask extends SourceTask {
     }
 
     private List<SourceRecord> getSourceRecords() {
+        Struct valueStruct = new Struct(RandomConnectorConfig.VALUE_SCHEMA)
+                .put("value", new Random().nextInt()); 
+
         return Collections.singletonList(new SourceRecord(
                 null,
                 null,
                 topic,
                 RandomConnectorConfig.VALUE_SCHEMA,
-                new Random().nextInt()));
+                valueStruct));
     }
 
     @Override

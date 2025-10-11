@@ -9,6 +9,7 @@ plugins {
 
 dependencies {
     implementation 'org.apache.kafka:connect-api:4.1.0'
+    implementation 'io.confluent:monitoring-interceptors:8.0.0'
     implementation project(':utilities')
 
     compileOnly 'org.projectlombok:lombok:1.18.42'

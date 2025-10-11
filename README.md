@@ -3,9 +3,6 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 
 ### Installation
 ```bash
-# start containers
-docker compose up
-
 # Confluent(Kafka):                          8.0.1(4.0.x, 2025.10.01), 7.9.3(3.9.x), 7.8.2(3.8.x)
 # Debezium(Kafka): 3.3.0(4.1.x, 2025.09.02), 3.2.3(4.0.x),             3.1.3(3.9.x)
 
@@ -30,11 +27,14 @@ cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connec
 
 cp ./app/build/libs/*-all.jar kafka-connector
 
-# Restart connect to apply additionally installed connector plugins after server startup
-docker restart connect
+# start containers (Add the -f option to create a sample connector automatically)
+docker compose -f docker-compose-full up
 
+# If necessary, restart connect to apply additionally installed connector plugins after server startup
+# docker restart connect
+```
 
-### Installed default connectors
+### Check available connectors
 ```bash
 
 docker exec -it -u root connect bash
@@ -96,6 +96,8 @@ curl connect:8083/connector-plugins | jq .
 
 ## Visit 
 - Kafka UI: http://localhost:8989
+- Control Center UI: http://localhost:9021 (full version only)
+![RandomSourceConnector](.assets/image.png)
 
 ### Stops containers and removes containers, networks, and volumes created by `compose up`.
 ```bash

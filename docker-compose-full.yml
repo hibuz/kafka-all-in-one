@@ -307,6 +307,7 @@ services:
 
   create-connectors:
     image: ellerbrock/alpine-bash-curl-ssl
+    container_name: create-connectors
     depends_on:
       postgres:
         condition: service_healthy
