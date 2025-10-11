@@ -1,0 +1,8 @@
+{
+	"name": "kafka-random-source-connector",
+	"config": {
+		"connector.class": "com.hibuz.kafka.connect.examples.source.RandomSourceConnector",
+		"topic": "random-int-topic",
+		"sleep.seconds": "20"
+	}
+}

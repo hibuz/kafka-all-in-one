@@ -1,4 +1,4 @@
-package com.hibuz.kafka.connect.examples;
+package com.hibuz.kafka.connect.examples.source;
 
 import java.util.Collections;
 import java.util.List;
