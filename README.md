@@ -27,11 +27,8 @@ cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connec
 
 cp ./app/build/libs/*-all.jar kafka-connector
 
-# start containers
+# start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
 docker compose up
-# For full version
-#   1. Create codespace for hibuz/kafka-all-in-one with 4-core(16GB RAM) machine type
-#   2. Add the -f docker-compose-full.yml option to create a sample connector automatically
 
 # If necessary, restart connect to apply additionally installed connector plugins after server startup
 # docker restart connect
