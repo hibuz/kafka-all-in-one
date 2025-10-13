@@ -27,8 +27,11 @@ cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connec
 
 cp ./app/build/libs/*-all.jar kafka-connector
 
-# start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
+# start containers
 docker compose up
+# For full version
+#   1. Create codespace for hibuz/kafka-all-in-one with 4-core(16GB RAM) machine type
+#   2. Add the -f docker-compose-full.yml option to create a sample connector automatically
 
 # If necessary, restart connect to apply additionally installed connector plugins after server startup
 # docker restart connect
@@ -96,8 +99,9 @@ curl connect:8083/connector-plugins | jq .
 
 ## Visit 
 - Kafka UI: http://localhost:8989
+![KafkaUI-RandomSourceConnector](.assets/kafka-ui.png)
 - Control Center UI: http://localhost:9021 (full version only)
-![RandomSourceConnector](.assets/image.png)
+![ControlCenter-RandomSourceConnector](.assets/cc.png)
 
 ### Stops containers and removes containers, networks, and volumes created by `compose up`.
 ```bash
