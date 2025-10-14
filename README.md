@@ -6,32 +6,8 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 # Confluent(Kafka):                          8.0.1(4.0.x, 2025.10.01), 7.9.3(3.9.x), 7.8.2(3.8.x)
 # Debezium(Kafka): 3.3.0(4.1.x, 2025.09.02), 3.2.3(4.0.x),             3.1.3(3.9.x)
 
-# https://repo1.maven.org/maven2/io/debezium
-wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.3.0.Final/debezium-connector-mysql-3.3.0.Final-plugin.tar.gz
-wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.3.0.Final/debezium-connector-postgres-3.3.0.Final-plugin.tar.gz
-
-# https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
-wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.8.4/confluentinc-kafka-connect-jdbc-10.8.4.zip
-
-tar zxf debezium-connector-mysql* -C ./kafka-connector
-tar zxf debezium-connector-postgres* -C ./kafka-connector
-unzip confluentinc-kafka-connect-jdbc* -d ./kafka-connector
-
-rm *-connect*
-
-# Jdbc(Source/Sink)Connector does not have mysql driver
-cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.8.4/lib/
-
-# sample connector
-./gradlew shadowJar
-
-cp ./app/build/libs/*-all.jar kafka-connector
-
 # start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
 docker compose up
-
-# If necessary, restart connect to apply additionally installed connector plugins after server startup
-# docker restart connect
 ```
 
 ### Check available connectors
@@ -120,3 +96,4 @@ docker compose down -v
 ## References
 * https://github.com/confluentinc/cp-all-in-one
 * https://github.com/provectus/kafka-ui
+* https://github.com/enfuse/kafka-connect-demo
