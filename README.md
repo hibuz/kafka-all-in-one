@@ -8,6 +8,9 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 
 # start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
 docker compose up
+
+# connect to MySQL
+docker exec -it mysql mysql -umyuser -p -Dmysqldb
 ```
 
 ### Check available connectors

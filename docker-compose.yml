@@ -161,6 +161,7 @@ services:
     volumes:
       - mysql-vol:/var/lib/mysql
       - mysql-vol:/var/log/mysql
+      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_DATABASE: mysqldb
       MYSQL_ROOT_PASSWORD: root_pw123!
