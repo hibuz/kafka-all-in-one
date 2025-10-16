@@ -12,16 +12,25 @@ docker compose up
 # connect to MySQL
 docker exec -it mysql mysql -umyuser -pmyuser_pw123! -Dmysqldb
 
-mysql> select * from customers;
-+------+------------+-----------+-----------------------+
-| id   | first_name | last_name | email                 |
-+------+------------+-----------+-----------------------+
-| 1001 | Sally      | Thomas    | sally.thomas@acme.com |
-| 1002 | George     | Bailey    | gbailey@foobar.com    |
-| 1003 | Edward     | Walker    | ed@walker.com         |
-| 1004 | Anne       | Kretchmar | annek@noanswer.org    |
-+------+------------+-----------+-----------------------+
-4 rows in set (0.000 sec)
+mysql> select * from products;
++-----+-------------+-----------------------+--------+--------+---------------------+
+| id  | name        | description           | weight | price  | create_at           |
++-----+-------------+-----------------------+--------+--------+---------------------+
+| 101 | scooter     | Small 2-wheel scooter |   3.14 | 10.224 | 2025-10-16 20:12:33 |
+| 102 | car battery | 12V car battery       |    8.1 | 11.224 | 2025-10-16 20:12:33 |
+...
+9 rows in set (0.000 sec)
+
+mysql> exit;
+
+docker exec -it postgres psql -U pguser -d pgdb
+
+pgdb=# select * from products_out;
+ id | name | description | weight | price | create_at 
+----+------+-------------+--------+-------+-----------
+(0 rows)
+
+pgdb=# \q
 ```
 
 ### Check available connectors
@@ -105,6 +114,42 @@ curl -X GET -H "Accept:application/json" localhost:8083/connectors/mysqldb-sourc
 }
 
 ```
+
+### Create pgsql sink connectors
+```bash
+
+# create a sample PostgreSQL sink connector
+curl -X POST -H "Content-Type: application/json" -d @/connectors/pgdb-sink-connector.json http://connect:8083/connectors
+
+# check connector status
+curl -X GET -H "Accept:application/json" localhost:8083/connectors/pgdb-sink-connector/status | jq .
+{
+  "name": "pgdb-sink-connector",
+  "connector": {
+    "state": "RUNNING",
+    "worker_id": "connect:8083"
+  },
+  "tasks": [
+    {
+      "id": 0,
+      "state": "RUNNING",
+      "worker_id": "connect:8083"
+    }
+  ],
+  "type": "sink"
+}
+
+# connect to MySQL
+
+# update a record in MySQL to see the change data capture (CDC) in action
+mysql> UPDATE products SET description='Large 2-wheel scooter', price=12.345, create_at=now() WHERE id=101;
+Query OK, 1 row affected (0.003 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+# connect and query PostgreSQL to see the data replicated from MySQL
+pgdb=# select * from products_out;
+```
+
 
 ## Visit 
 - Kafka UI: http://localhost:8989

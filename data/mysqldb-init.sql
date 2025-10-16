@@ -75,6 +75,8 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
   `weight` float DEFAULT NULL,
+  `price` decimal(10,3) NOT NULL,
+  `create_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -85,7 +87,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (101,'scooter','Small 2-wheel scooter',3.14),(102,'car battery','12V car battery',8.1),(103,'12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8),(104,'hammer','12oz carpenter\'s hammer',0.75),(105,'hammer','14oz carpenter\'s hammer',0.875),(106,'hammer','16oz carpenters hammer',1),(107,'rocks','box of assorted rocks',5.3),(108,'jacket','water resistent black wind breaker',0.1),(109,'spare tire','24 inch spare tire',22.2);
+INSERT INTO `products` VALUES (101,'scooter','Small 2-wheel scooter',3.14, 10.224, now()),(102,'car battery','12V car battery',8.1, 11.224, now()),(103,'12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8, 12.224, now()),(104,'hammer','12oz carpenter\'s hammer',0.75, 13.224, now()),(105,'hammer','14oz carpenter\'s hammer',0.875, 14.224, now()),(106,'hammer','16oz carpenters hammer',1, 15.224, now()),(107,'rocks','box of assorted rocks',5.3, 16.224, now()),(108,'jacket','water resistent black wind breaker',0.1, 17.224, now()),(109,'spare tire','24 inch spare tire',22.2, 18.224, now());
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 

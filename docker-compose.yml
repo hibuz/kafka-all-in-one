@@ -162,7 +162,7 @@ services:
     volumes:
       - mysql-vol:/var/lib/mysql
       - mysql-vol:/var/log/mysql
-      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/mysqldb-init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_DATABASE: mysqldb
       MYSQL_ROOT_PASSWORD: root_pw123!
@@ -177,6 +177,7 @@ services:
       - "5432:5432"
     volumes:
       - pg-vol:/var/lib/postgresql/data
+      - ./data/pgdb-init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_DB: pgdb
       POSTGRES_USER: pguser
