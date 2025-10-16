@@ -1,4 +1,40 @@
+use mysql;
+
+-- for debezium source connector
+-- SHOW GRANTS FOR 'myuser'@'%';
+GRANT SELECT, RELOAD, FLUSH_TABLES, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'myuser'@'%';
+
+FLUSH PRIVILEGES;
+
 use mysqldb;
+
+--
+-- Table structure for table `customers`
+--
+
+DROP TABLE IF EXISTS `customers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `customers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=1005 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customers`
+--
+
+LOCK TABLES `customers` WRITE;
+/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+INSERT INTO `customers` VALUES (1001,'Sally','Thomas','sally.thomas@acme.com'),(1002,'George','Bailey','gbailey@foobar.com'),(1003,'Edward','Walker','ed@walker.com'),(1004,'Anne','Kretchmar','annek@noanswer.org');
+/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 DROP TABLE IF EXISTS `addresses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -28,55 +64,29 @@ INSERT INTO `addresses` VALUES (10,1001,'3183 Moore Avenue','Euless','Texas','76
 UNLOCK TABLES;
 
 --
--- Table structure for table `customers`
+-- Table structure for table `products`
 --
 
-DROP TABLE IF EXISTS `customers`;
+DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `customers` (
+CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1005 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `customers`
---
-
-LOCK TABLES `customers` WRITE;
-/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1001,'Sally','Thomas','sally.thomas@acme.com'),(1002,'George','Bailey','gbailey@foobar.com'),(1003,'Edward','Walker','ed@walker.com'),(1004,'Anne','Kretchmar','annek@noanswer.org');
-/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `geom`
---
-
-DROP TABLE IF EXISTS `geom`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `geom` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `g` geometry NOT NULL,
-  `h` geometry DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(512) DEFAULT NULL,
+  `weight` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `geom`
+-- Dumping data for table `products`
 --
 
-LOCK TABLES `geom` WRITE;
-/*!40000 ALTER TABLE `geom` DISABLE KEYS */;
-INSERT INTO `geom` VALUES (1,_binary '\0\0\0\0\0\0\0\0\0\0\0\0\0\�?\0\0\0\0\0\0\�?',NULL),(2,_binary '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\�?\0\0\0\0\0\0@\0\0\0\0\0\0@',NULL),(3,_binary '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0@\0\0\0\0\0\0\0\0\0\0\0\0\0\0@\0\0\0\0\0\0\0\0\0\0\0\0\0\0@',NULL);
-/*!40000 ALTER TABLE `geom` ENABLE KEYS */;
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (101,'scooter','Small 2-wheel scooter',3.14),(102,'car battery','12V car battery',8.1),(103,'12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8),(104,'hammer','12oz carpenter\'s hammer',0.75),(105,'hammer','14oz carpenter\'s hammer',0.875),(106,'hammer','16oz carpenters hammer',1),(107,'rocks','box of assorted rocks',5.3),(108,'jacket','water resistent black wind breaker',0.1),(109,'spare tire','24 inch spare tire',22.2);
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -108,30 +118,4 @@ LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 INSERT INTO `orders` VALUES (10001,'2016-01-16',1001,1,102),(10002,'2016-01-17',1002,2,105),(10003,'2016-02-19',1002,2,106),(10004,'2016-02-21',1003,1,107);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `products`
---
-
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(512) DEFAULT NULL,
-  `weight` float DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `products`
---
-
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (101,'scooter','Small 2-wheel scooter',3.14),(102,'car battery','12V car battery',8.1),(103,'12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8),(104,'hammer','12oz carpenter\'s hammer',0.75),(105,'hammer','14oz carpenter\'s hammer',0.875),(106,'hammer','16oz carpenter\'s hammer',1),(107,'rocks','box of assorted rocks',5.3),(108,'jacket','water resistent black wind breaker',0.1),(109,'spare tire','24 inch spare tire',22.2);
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;

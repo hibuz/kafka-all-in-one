@@ -10,7 +10,18 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 docker compose up
 
 # connect to MySQL
-docker exec -it mysql mysql -umyuser -p -Dmysqldb
+docker exec -it mysql mysql -umyuser -pmyuser_pw123! -Dmysqldb
+
+mysql> select * from customers;
++------+------------+-----------+-----------------------+
+| id   | first_name | last_name | email                 |
++------+------------+-----------+-----------------------+
+| 1001 | Sally      | Thomas    | sally.thomas@acme.com |
+| 1002 | George     | Bailey    | gbailey@foobar.com    |
+| 1003 | Edward     | Walker    | ed@walker.com         |
+| 1004 | Anne       | Kretchmar | annek@noanswer.org    |
++------+------------+-----------+-----------------------+
+4 rows in set (0.000 sec)
 ```
 
 ### Check available connectors
@@ -71,6 +82,28 @@ curl connect:8083/connector-plugins | jq .
     "version": "8.0.0-ccs"
   }
 ]
+
+# create a sample MySQL source connector
+curl -X POST -H "Content-Type: application/json" -d @/connectors/mysqldb-source-connector.json http://connect:8083/connectors
+
+# check connector status
+curl -X GET -H "Accept:application/json" localhost:8083/connectors/mysqldb-source-connector/status | jq .
+{
+  "name": "mysqldb-source-connector",
+  "connector": {
+    "state": "RUNNING",
+    "worker_id": "connect:8083"
+  },
+  "tasks": [
+    {
+      "id": 0,
+      "state": "RUNNING",
+      "worker_id": "connect:8083"
+    }
+  ],
+  "type": "source"
+}
+
 ```
 
 ## Visit 
