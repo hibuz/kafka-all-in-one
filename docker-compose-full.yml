@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.0.2
+    image: confluentinc/cp-server:8.1.0
     hostname: broker
     container_name: broker
     ports:
@@ -55,7 +55,7 @@ services:
       KAFKA_CONFLUENT_CONSUMER_LAG_EMITTER_ENABLED: "true"
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.0.2
+    image: confluentinc/cp-schema-registry:8.1.0
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -97,7 +97,7 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.0.2.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.1.0.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connector"
@@ -164,7 +164,7 @@ services:
       CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.0.2
+    image: confluentinc/cp-ksqldb-server:8.1.0
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -219,7 +219,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.0.2
+    image: confluentinc/cp-kafka-rest:8.1.0
     depends_on:
       - broker
       - schema-registry
@@ -294,7 +294,7 @@ services:
       #SPRING_SECURITY_USER_PASSWORD: pass
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.0.2
+    image: confluentinc/cp-server:8.1.0
     volumes:
        - ./data:/data
     depends_on:
