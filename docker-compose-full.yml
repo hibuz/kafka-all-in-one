@@ -105,7 +105,7 @@ services:
       - ./kafka-connector:/usr/share/kafka-connector
 
   prometheus:
-    image: confluentinc/cp-enterprise-prometheus:2.2.1
+    image: confluentinc/cp-enterprise-prometheus:2.3.0
     hostname: cp-enterprise-prometheus
     container_name: prometheus
     volumes:
@@ -117,7 +117,7 @@ services:
       SHOULD_LOG_TO_FILE: false
 
   alertmanager:
-    image: confluentinc/cp-enterprise-alertmanager:2.2.1
+    image: confluentinc/cp-enterprise-alertmanager:2.3.0
     hostname: cp-enterprise-alertmanager
     container_name: alertmanager
     depends_on:
@@ -131,7 +131,7 @@ services:
       SHOULD_LOG_TO_FILE: false
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center-next-gen:2.2.1
+    image: confluentinc/cp-enterprise-control-center-next-gen:2.3.0
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -319,7 +319,7 @@ services:
     command: bash -c '/connectors/start.sh'
 
   mysql:
-    image: mysql:9.4.0
+    image: mysql:9.5.0
     hostname: mysql
     container_name: mysql
     command:
