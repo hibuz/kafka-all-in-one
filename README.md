@@ -3,8 +3,8 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 
 ### Installation
 ```bash
-# Confluent(Kafka):                          8.0.1(4.0.x, 2025.10.01), 7.9.3(3.9.x), 7.8.2(3.8.x)
-# Debezium(Kafka): 3.3.0(4.1.x, 2025.09.02), 3.2.3(4.0.x),             3.1.3(3.9.x)
+# Confluent(Kafka): 8.1.0(4.1.x, 2025.10.15), 8.0.2(4.0.x), 7.9.3(3.9.x), 7.8.2(3.8.x)
+# Debezium(Kafka):  3.3.0(4.1.x, 2025.09.02), 3.2.3(4.0.x), 3.1.3(3.9.x)
 
 # start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
 docker compose up
@@ -39,9 +39,7 @@ pgdb=# \q
 docker exec -it -u root connect bash
 
 # curl
-microdnf install -y dnf
-
-dnf install -y net-tools procps-ng jq
+microdnf install -y dnf && dnf install -y jq
 
 curl connect:8083/connector-plugins | jq .
 [

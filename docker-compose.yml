@@ -53,6 +53,7 @@ services:
     depends_on:
       - broker
       - schema-registry
+      - kafka-init-connectors
     ports:
       - "8083:8083"
     environment:
@@ -120,7 +121,6 @@ services:
     depends_on:
       - broker
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
-               cub kafka-ready -b broker:29092 1 30 && \
                kafka-topics --create --topic users --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
                kafka-topics --create --topic messages --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
                kafka-console-producer --bootstrap-server broker:29092 --topic users < /data/users.json'"
@@ -130,7 +130,8 @@ services:
     volumes:
        - ./:/workspaces
     command: "sh -c 'cd /workspaces && \
-             ./gradlew shadowJar && \
+              rm -rf kafka-connector/* && \
+              ./gradlew shadowJar && \
               cp ./app/build/libs/*-all.jar kafka-connector && \
               wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.3.0.Final/debezium-connector-mysql-3.3.0.Final-plugin.tar.gz && \
               wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.3.0.Final/debezium-connector-postgres-3.3.0.Final-plugin.tar.gz && \
@@ -176,7 +177,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg-vol:/var/lib/postgresql/data
+      - pg-vol:/var/lib/postgresql
       - ./data/pgdb-init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_DB: pgdb
