@@ -13,7 +13,7 @@
 		"pk.fields": "id",
 		"db.timezone": "Asia/Seoul",
 		"table.name.format": "public.products_out",
-		"fields.whitelist": "name, description,weight,price,create_at",
+		"fields.whitelist": "id, name, description, weight, price, create_at",
 		
 		"key.converter": "io.confluent.connect.avro.AvroConverter",
 		"value.converter": "io.confluent.connect.avro.AvroConverter",
