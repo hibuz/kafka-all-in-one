@@ -1,7 +1,7 @@
 # kafka-all-in-one
 A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, Kafka UI, MySQL, and PostgreSQL using Docker Compose.
 
-### Installation
+### Run and check the environment
 ```bash
 # Confluent(Kafka): 8.1.0(4.1.x, 2025.10.15), 8.0.2(4.0.x), 7.9.3(3.9.x), 7.8.2(3.8.x)
 # Debezium(Kafka):  3.3.0(4.1.x, 2025.09.02), 3.2.3(4.0.x), 3.1.3(3.9.x)
@@ -23,6 +23,7 @@ mysql> select * from products;
 
 mysql> exit;
 
+# connect to PostgreSQL
 docker exec -it postgres psql -U pguser -d pgdb
 
 pgdb=# select * from products_out;
@@ -35,7 +36,7 @@ pgdb=# \q
 
 ### Check available connectors
 ```bash
-
+# connect to connect container
 docker exec -it -u root connect bash
 
 # curl
@@ -89,7 +90,10 @@ curl connect:8083/connector-plugins | jq .
     "version": "8.0.0-ccs"
   }
 ]
+```
 
+### Create mysql source connector
+```bash
 # create a sample MySQL source connector
 curl -X POST -H "Content-Type: application/json" -d @/connectors/mysqldb-source-connector.json http://connect:8083/connectors
 
@@ -113,9 +117,8 @@ curl -X GET -H "Accept:application/json" localhost:8083/connectors/mysqldb-sourc
 
 ```
 
-### Create pgsql sink connectors
+### Create pgsql sink connector
 ```bash
-
 # create a sample PostgreSQL sink connector
 curl -X POST -H "Content-Type: application/json" -d @/connectors/pgdb-sink-connector.json http://connect:8083/connectors
 
@@ -137,9 +140,7 @@ curl -X GET -H "Accept:application/json" localhost:8083/connectors/pgdb-sink-con
   "type": "sink"
 }
 
-# connect to MySQL
-
-# update a record in MySQL to see the change data capture (CDC) in action
+# connect and update a record in MySQL to see the change data capture (CDC) in action
 mysql> UPDATE products SET description='Large 2-wheel scooter', price=12.345, create_at=now() WHERE id=101;
 Query OK, 1 row affected (0.003 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
