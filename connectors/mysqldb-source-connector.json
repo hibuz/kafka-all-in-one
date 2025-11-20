@@ -3,10 +3,7 @@
 	"config": {
 		"connector.class": "io.debezium.connector.mysql.MySqlConnector",
 		"tasks.max": "1",
-		"key.converter": "io.confluent.connect.avro.AvroConverter",
-		"value.converter": "io.confluent.connect.avro.AvroConverter",
-		"key.converter.schema.registry.url": "http://schema-registry:8081",
-		"value.converter.schema.registry.url": "http://schema-registry:8081",
+
 		"database.hostname": "mysql",
 		"database.port": "3306",
 		"database.user": "myuser",
@@ -14,8 +11,24 @@
 		"database.server.id": "1",
 		"topic.prefix": "dbserver1",
 		"database.include.list": "mysqldb",
+		"table.include.list": "mysqldb.products, mysqldb.orders",
 		"snapshot.mode": "initial",
+
+		"transforms": "convertTimezone, unwrap",
+		"transforms.convertTimezone.type": "io.debezium.transforms.TimezoneConverter",
+		"transforms.convertTimezone.converted.timezone": "+09:00",
+		"transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+		"transforms.unwrap.delete.handling.mode": "rewrite",
+		"transforms.unwrap.add.fields": "op",
+		"transforms.unwrap.drop.tombstones": "false",
+		
+		"key.converter": "io.confluent.connect.avro.AvroConverter",
+		"value.converter": "io.confluent.connect.avro.AvroConverter",
+		"key.converter.schema.registry.url": "http://schema-registry:8081",
+		"value.converter.schema.registry.url": "http://schema-registry:8081",
+
 		"schema.history.internal.kafka.bootstrap.servers": "broker:29092",
 		"schema.history.internal.kafka.topic": "schema-changes.mysqldb"
 	}
 }
+

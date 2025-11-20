@@ -15,6 +15,11 @@
 		"table.name.format": "public.products_out",
 		"fields.whitelist": "id, name, description, weight, price, create_at",
 		
+	 	"transforms": "convertCreateAt",
+		"transforms.convertCreateAt.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+		"transforms.convertCreateAt.field": "create_at",
+		"transforms.convertCreateAt.target.type": "Timestamp",
+		
 		"key.converter": "io.confluent.connect.avro.AvroConverter",
 		"value.converter": "io.confluent.connect.avro.AvroConverter",
 		"key.converter.schema.registry.url": "http://schema-registry:8081",
