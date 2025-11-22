@@ -16,8 +16,8 @@ mysql> select * from products;
 +-----+-------------+-----------------------+--------+--------+---------------------+
 | id  | name        | description           | weight | price  | create_at           |
 +-----+-------------+-----------------------+--------+--------+---------------------+
-| 101 | scooter     | Small 2-wheel scooter |   3.14 | 10.224 | 2025-10-16 20:12:33 |
-| 102 | car battery | 12V car battery       |    8.1 | 11.224 | 2025-10-16 20:12:33 |
+| 101 | scooter     | Small 2-wheel scooter |   3.14 | 10.224 | 2025-11-22 00:07:23 |
+| 102 | car battery | 12V car battery       |    8.1 | 11.224 | 2025-11-22 00:07:23 |
 ...
 9 rows in set (0.000 sec)
 
@@ -140,13 +140,36 @@ curl -X GET -H "Accept:application/json" localhost:8083/connectors/pgdb-sink-con
   "type": "sink"
 }
 
-# connect and update a record in MySQL to see the change data capture (CDC) in action
+exit
+```
+
+### Test data replication from MySQL to PostgreSQL
+```bash
+# connect to PostgreSQL
+docker exec -it postgres psql -U pguser -d pgdb
+
+# query PostgreSQL to see the data replicated from MySQL
+pgdb=# select * from products_out;
+id  |     name     |       description     |       weight        | price  |      create_at      
+-----+-------------+-----------------------+---------------------+--------+---------------------
+ 101 | scooter     | Small 2-wheel scooter |   3.140000104904175 | 10.224 | 2025-11-22 00:07:23
+ 102 | car battery | 12V car battery       |   8.100000381469727 | 11.224 | 2025-11-22 00:07:23
+ ...
+ (9 rows)
+
+# connect to MySQL
+docker exec -it mysql mysql -umyuser -pmyuser_pw123! -Dmysqldb
+
+# update a record in MySQL to see the change data capture (CDC) in action
 mysql> UPDATE products SET description='Large 2-wheel scooter', price=12.345, create_at=now() WHERE id=101;
 Query OK, 1 row affected (0.003 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 
-# connect and query PostgreSQL to see the data replicated from MySQL
-pgdb=# select * from products_out;
+# verify the updated record in PostgreSQL
+pgdb=# select * from products_out where id = 101;
+ id  |  name   |      description      |      weight       | price  |      create_at      
+-----+---------+-----------------------+-------------------+--------+---------------------
+ 101 | scooter | Large 2-wheel scooter | 3.140000104904175 | 12.345 | 2025-11-22 09:24:41
 ```
 
 
