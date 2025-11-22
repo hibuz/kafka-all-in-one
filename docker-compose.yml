@@ -130,7 +130,7 @@ services:
     volumes:
        - ./:/workspaces
     command: "sh -c 'cd /workspaces && \
-              if [ -n \"$(ls -A kafka-connector 2>/dev/null)\" ]; then echo \"kafka-connector exists, skipping init\"; exit 0; fi && \
+              if [ \"$(ls -A kafka-connector 2>/dev/null | wc -l)\" -ge 2 ]; then echo \"kafka-connector has connectors, skipping init\"; exit 0; fi && \
               rm -rf kafka-connector/* && \
               cd kafka-random-source-connector && ./gradlew shadowJar && cd .. && \
               cp ./kafka-random-source-connector/app/build/libs/*-all.jar kafka-connector && \
