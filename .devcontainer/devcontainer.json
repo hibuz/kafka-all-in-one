@@ -9,7 +9,8 @@
   "customizations": {
       "vscode": {
         "extensions": [
-          "eamodio.gitlens"
+          "eamodio.gitlens",
+          "vmware.vscode-boot-dev-pack"
         ],
         "settings": {
           "locale": "en"
