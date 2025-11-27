@@ -1,7 +1,9 @@
 package com.hibuz.kafka.streams.examples;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DemoKafkaListener {
 
-	@KafkaListener(topics = "messages", groupId = "app1")
-	public void listenWithApp1(String message) {
-		log.info("Received message at app1: {}", message);
-	}
+	@Value("${spring.application.name}")
+	private String appName;
 
-	@KafkaListener(topics = "messages", groupId = "app2")
-	public void listenWithApp2(String message) {
-		log.info("Received message at app2: {}", message);
+	@KafkaListener(topics = "test-topic")
+	public void listenWithApp(String message, ConsumerRecordMetadata metadata) {
+		log.info("Received message at {}, p-{}, offset-{}: {}", appName, metadata.partition(), metadata.offset(), message);
 	}
 }

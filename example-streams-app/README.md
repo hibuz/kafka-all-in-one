@@ -3,8 +3,8 @@
 한국어 (KR) / English (EN) 상세 설명
 
 ## 개요 / Overview
-- **KR**: 이 예제 애플리케이션은 로컬 Kafka 브로커에 연결되어 `messages` 토픽을 리스닝하는 Spring Boot 애플리케이션입니다. `DemoKafkaListener` 클래스는 동일 토픽에 대해 서로 다른 consumer group(`app1`, `app2`)을 사용하여 각각 메시지를 수신하고 로그로 출력합니다.
-- **EN**: This example application is a Spring Boot app that connects to a local Kafka broker and listens to the `messages` topic. The `DemoKafkaListener` class uses two different consumer groups (`app1` and `app2`) so both listeners receive copies of messages and log them.
+- **KR**: 이 예제 애플리케이션은 로컬 Kafka 브로커에 연결되어 `test-topic` 토픽을 리스닝하는 Spring Boot 애플리케이션입니다. `DemoKafkaListener` 클래스는 동일 토픽에 대해 서로 다른 App(`app1`, `app2`)을 사용하여 각각 메시지를 수신하고 로그로 출력합니다.
+- **EN**: This example application is a Spring Boot app that connects to a local Kafka broker and listens to the `test-topic` topic. The `DemoKafkaListener` class uses two different consumer apps (`app1` and `app2`) so both listeners receive copies of messages and log them.
 
 ## 요구 사항 / Requirements
 - **Java**: Java 21 (build toolchain in `build.gradle` targets Java 21)
@@ -29,7 +29,7 @@ docker compose -f docker-compose-full.yml up -d
 ./gradlew :example-streams-app:bootRun
 ```
 
-3. 애플리케이션이 브로커(`localhost:9092`)에 연결되면 `DemoKafkaListener`가 `messages` 토픽을 리스닝합니다. 토픽이 없다면 compose 초기화 스크립트가 생성하지만, 수동으로 생성하려면 아래를 참고하세요.
+3. 애플리케이션이 브로커(`localhost:9092`)에 연결되면 `DemoKafkaListener`가 `test-topic` 토픽을 리스닝합니다. 토픽이 없다면 compose 초기화 스크립트가 생성하지만, 수동으로 생성하려면 아래를 참고하세요.
 
 ## 빌드 및 실행(대안) / Build & Run (alternate)
 
@@ -46,13 +46,14 @@ java -jar example-streams-app/build/libs/*example-streams-app*.jar
 ./gradlew :example-streams-app:bootBuildImage
 ```
 
-## 테스트: `messages` 토픽으로 메시지 보내기 / Test: send messages to `messages` topic
+## 테스트: `test-topic` 토픽으로 메시지 보내기 / Test: send messages to `test-topic` topic
 
 1. Docker 내부에서 Kafka 콘솔 프로듀서를 사용 (가장 쉬운 방법):
 
 ```bash
 # Kafka 컨테이너 이름은 docker-compose 설정에 따라 다릅니다. 예: kafka
-docker compose exec broker kafka-console-producer --bootstrap-server localhost:9092 --topic messages
+docker compose exec broker kafka-console-producer --bootstrap-server localhost:9092 --topic test-topic
+```
 > Hello from CLI
 ```
 
@@ -61,8 +62,7 @@ docker compose exec broker kafka-console-producer --bootstrap-server localhost:9
 3. 예상 로그 출력 (애플리케이션 로그):
 
 ```
-INFO  - Received message at app1: Hello from CLI
-INFO  - Received message at app2: Hello from CLI
+INFO  - Received message at app1, p-0, offset-4: Hello from CLI
 ```
 
 두 리스너는 같은 토픽을 서로 다른 consumer group으로 구독하고 있으므로 각 리스너가 메시지를 독립적으로 수신합니다.
@@ -75,7 +75,7 @@ INFO  - Received message at app2: Hello from CLI
 - 토픽 미생성: `docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --list`로 확인, 필요 시 생성:
 
 ```bash
-docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --create --topic messages --partitions 1 --replication-factor 1
+docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --create --topic test-topic --partitions 2 --replication-factor 1
 ```
 
 - Java 버전 오류: 로컬 JDK가 Java 21인지 확인하세요. Gradle wrapper가 로컬 JDK를 사용하도록 설정되어 있습니다.
@@ -89,8 +89,7 @@ docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --crea
 
 ## 추가 참고 / Notes
 - `DemoKafkaListener`는 다음과 같은 메서드를 제공합니다 (간단 요약):
-  - `listenWithApp1(String message)` — `@KafkaListener(topics = "messages", groupId = "app1")`
-  - `listenWithApp2(String message)` — `@KafkaListener(topics = "messages", groupId = "app2")`
+  - `listenWithApp(String message, ConsumerRecordMetadata metadata)` — `@KafkaListener(topics = "test-topic")`
 
 ---
 

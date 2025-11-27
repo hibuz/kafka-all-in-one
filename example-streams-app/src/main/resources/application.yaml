@@ -1,9 +1,17 @@
 spring:
+  application:
+    name: app1
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
+      client-id: c
+      group-id: app-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
       properties:
         group.protocol: consumer
+
+  docker:
+    compose:
+      enabled: false

@@ -17,9 +17,6 @@
         }
       }
     },
-    "hostRequirements": {
-      "cpus": 4
-    },
     "forwardPorts": [
         8989,
         9021
