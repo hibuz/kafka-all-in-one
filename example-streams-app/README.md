@@ -14,16 +14,7 @@
 
 ## 빠른 시작 / Quick Start
 
-1. 로컬 Kafka 스택을 띄웁니다 (레포지토리 루트에 있는 `docker-compose.yml` 또는 전체 구성 `docker-compose-full.yml` 사용 권장).
-
-```bash
-# 루트에서
-docker compose up -d
-# 또는 전체 구성:
-docker compose -f docker-compose-full.yml up -d
-```
-
-2. 애플리케이션 실행 (Gradle bootRun):
+1. 애플리케이션 실행 (Gradle bootRun):
 
 ```bash
 ./gradlew :example-streams-app:bootRun

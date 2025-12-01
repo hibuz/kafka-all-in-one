@@ -27,6 +27,7 @@ repositories {
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-kafka'
   implementation 'org.apache.kafka:kafka-streams'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
   compileOnly 'org.projectlombok:lombok'
   annotationProcessor 'org.projectlombok:lombok'
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -35,7 +36,8 @@ dependencies {
 }
 
 tasks.named('bootBuildImage') {
-  runImage = 'paketobuildpacks/ubuntu-noble-run:latest'
+  imageName = 'ghcr.io/hibuz/streams-app'
+  runImage = 'paketobuildpacks/ubuntu-noble-run'
 }
 
 tasks.named('test') {

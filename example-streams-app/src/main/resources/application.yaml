@@ -11,7 +11,3 @@ spring:
       auto-offset-reset: earliest
       properties:
         group.protocol: consumer
-
-  docker:
-    compose:
-      enabled: false
