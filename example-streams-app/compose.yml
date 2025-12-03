@@ -5,10 +5,10 @@ services:
       file: ../docker-compose.yml
       service: broker
 
-  example-streams-app:
-    image: ghcr.io/hibuz/streams-app
-    container_name: app
-    depends_on:
-      - broker
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
+  #example-streams-app:
+  #  image: ghcr.io/hibuz/streams-app
+  #  container_name: app
+  #  depends_on:
+  #    - broker
+  #  environment:
+  #    SPRING_PROFILES_ACTIVE: docker
