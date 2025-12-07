@@ -8,7 +8,7 @@ services:
       - "9092:9092"
       - "9101:9101"
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
       start_period: 20s
       interval: 5s
       timeout: 10s
@@ -96,10 +96,6 @@ services:
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-8.1.0.jar
-      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/kafka-connector"
     volumes:
       - ./kafka-connector:/usr/share/kafka-connector
@@ -339,6 +335,7 @@ services:
     volumes:
       - mysql-vol:/var/lib/mysql
       - mysql-vol:/var/log/mysql
+      - ./data/mysqldb-init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_DATABASE: mysqldb
       MYSQL_ROOT_PASSWORD: root_pw123!
@@ -353,6 +350,7 @@ services:
       - "5432:5432"
     volumes:
       - pg-vol:/var/lib/postgresql
+      - ./data/pgdb-init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U pguser -d pgdb" ]
       interval: 10s
