@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.1.0
+    image: confluentinc/cp-server:8.1.1
     hostname: broker
     container_name: broker
     ports:
@@ -55,7 +55,7 @@ services:
       KAFKA_CONFLUENT_CONSUMER_LAG_EMITTER_ENABLED: "true"
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.1.0
+    image: confluentinc/cp-schema-registry:8.1.1
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -164,7 +164,7 @@ services:
       CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.1.0
+    image: confluentinc/cp-ksqldb-server:8.1.1
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -187,7 +187,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:8.0.2
+    image: confluentinc/cp-ksqldb-cli:8.0.3
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -197,7 +197,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:8.0.2
+    image: confluentinc/ksqldb-examples:8.0.3
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -219,7 +219,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.1.0
+    image: confluentinc/cp-kafka-rest:8.1.1
     depends_on:
       - broker
       - schema-registry
@@ -294,7 +294,7 @@ services:
       #SPRING_SECURITY_USER_PASSWORD: pass
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.1.0
+    image: confluentinc/cp-server:8.1.1
     volumes:
        - ./data:/data
     depends_on:
@@ -346,7 +346,7 @@ services:
       MYSQL_PASSWORD: myuser_pw123!
 
   postgres:
-    image: postgres:18.0
+    image: postgres:18.1
     hostname: postgres
     container_name: postgres
     ports:

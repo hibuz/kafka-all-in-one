@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.apache.kafka:connect-api:4.1.0'
-    implementation 'io.confluent:monitoring-interceptors:8.0.0'
+    implementation 'org.apache.kafka:connect-api:4.1.1'
+    implementation 'io.confluent:monitoring-interceptors:8.0.3'
     implementation project(':common-lib')
 
 
