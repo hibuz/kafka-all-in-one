@@ -4,6 +4,14 @@ services:
     extends:
       file: ../docker-compose.yml
       service: broker
+  control-center:
+    extends:
+      file: ../docker-compose-full.yml
+      service: control-center
+  schema-registry:
+    extends:
+      file: ../docker-compose-full.yml
+      service: schema-registry
 
   #example-streams-app:
   #  image: ghcr.io/hibuz/streams-app
@@ -12,3 +20,6 @@ services:
   #    - broker
   #  environment:
   #    SPRING_PROFILES_ACTIVE: docker
+
+volumes:
+  kafka-vol: {}

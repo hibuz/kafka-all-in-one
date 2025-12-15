@@ -20,7 +20,8 @@
 ./gradlew :example-streams-app:bootRun
 
 
-[Consumer clientId=app1-0, groupId=app-group] Subscribed to topic(s): test-topic Member Y5-Nk5RORBqAWqaQtp-eKA with
+[Consumer clientId=app1-0, groupId=app-group] Subscribed to topic(s): test-topic
+Member Y5-Nk5RORBqAWqaQtp-eKA with
 epoch 0 transitioned from UNSUBSCRIBED to JOINING
 epoch 1 transitioned from JOINING to RECONCILING
   Reconciling assignment with local epoch 0
@@ -35,6 +36,16 @@ epoch 1 transitioned from STABLE to RECONCILING.
   Revoke previously assigned partitions [test-topic-1]
 epoch 1 transitioned from RECONCILING to ACKNOWLEDGING
 epoch 1 transitioned from ACKNOWLEDGING to STABLE
+epoch 3 transitioned from STABLE to RECONCILING
+  Reconciling assignment with local epoch 2
+  Added partitions (assigned - owned):       [test-topic-1]
+epoch 3 transitioned from RECONCILING to ACKNOWLEDGING
+epoch 3 transitioned from ACKNOWLEDGING to STABLE
+epoch 3 transitioned from STABLE to RECONCILING
+  Reconciling assignment with local epoch 3
+  Revoked partitions (owned - assigned):     [test-topic-1]
+epoch 3 transitioned from RECONCILING to ACKNOWLEDGING
+epoch 3 transitioned from ACKNOWLEDGING to STABLE
 ```
 
 3. 애플리케이션이 브로커(`localhost:9092`)에 연결되면 `DemoKafkaListener`가 `test-topic` 토픽을 리스닝합니다. 토픽이 없다면 compose 초기화 스크립트가 생성하지만, 수동으로 생성하려면 아래를 참고하세요.
@@ -50,11 +61,16 @@ java -jar example-streams-app/build/libs/*example-streams-app*.jar --spring.kafk
 [Consumer clientId=app2-0, groupId=app-group] Subscribed to topic(s): test-topic
 Member L_Pz2GCqSdiE2-LpFDz4bw with
 epoch 0 transitioned from UNSUBSCRIBED to JOINING
-epoch 2 transitioned from JOINING to RECONCILING
+  Reconciling assignment with local epoch 0
+  Added partitions (assigned - owned):       []
+epoch 4 transitioned from JOINING to RECONCILING
+epoch 4 transitioned from RECONCILING to ACKNOWLEDGING
+epoch 4 transitioned from ACKNOWLEDGING to STABLE
+epoch 4 transitioned from STABLE to RECONCILING
   Reconciling assignment with local epoch 1
   Adding newly assigned partitions: [test-topic-1]
-epoch 2 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 2 transitioned from ACKNOWLEDGING to STABLE
+epoch 4 transitioned from RECONCILING to ACKNOWLEDGING
+epoch 4 transitioned from ACKNOWLEDGING to STABLE
 ```
 
 - 컨테이너 이미지 생성 (Paketo buildpacks 사용 설정이 `build.gradle`에 있음):
@@ -91,8 +107,8 @@ app-group       localhost:9092  (1)       uniform              Stable           
 
 [appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group --members --verbose
 GROUP           CONSUMER-ID            HOST            CLIENT-ID       #PARTITIONS     CURRENT-EPOCH   CURRENT-ASSIGNMENT   TARGET-EPOCH    TARGET-ASSIGNMENT   
-app-group       Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0          1               2               test-topic:0         2               test-topic:0
-app-group       L_Pz2GCqSdiE2-LpFDz4bw /172.18.0.1     app2-0          1               2               test-topic:1         2               test-topic:1        
+app-group       L_Pz2GCqSdiE2cd-LpFDz4bw /172.18.0.1   app2-0          1               4               test-topic:1         4               test-topic:1
+app-group       Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0          1               4               test-topic:0         4               test-topic:0
 
 [appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group
 GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID            HOST            CLIENT-ID
