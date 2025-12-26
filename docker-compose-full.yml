@@ -53,6 +53,8 @@ services:
       KAFKA_CONFLUENT_TELEMETRY_METRICS_COLLECTOR_INTERVAL_MS: "60000"
       KAFKA_CONFLUENT_TELEMETRY_REMOTECONFIG_CONFLUENT_ENABLED: "false"
       KAFKA_CONFLUENT_CONSUMER_LAG_EMITTER_ENABLED: "true"
+    volumes:
+      - kafka-vol:/var/lib/kafka/data
 
   schema-registry:
     image: confluentinc/cp-schema-registry:8.1.1
@@ -78,8 +80,8 @@ services:
     hostname: connect
     container_name: connect
     depends_on:
-      - broker
-      - schema-registry
+      ksqldb-server:
+        condition: service_healthy
     ports:
       - "8083:8083"
     healthcheck:
@@ -136,7 +138,7 @@ services:
     hostname: control-center
     container_name: control-center
     depends_on:
-      schema-registry:
+      connect:
         condition: service_healthy
     ports:
       - "9021:8080"
@@ -165,10 +167,15 @@ services:
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
-      - broker
-      - connect
+      schema-registry:
+        condition: service_healthy
     ports:
       - "8088:8088"
+    healthcheck:
+      test: [ "CMD", "curl", "localhost:8088" ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
     environment:
       KSQL_CONFIG_DIR: "/etc/ksql"
       KSQL_BOOTSTRAP_SERVERS: "broker:29092"
@@ -270,10 +277,8 @@ services:
     image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     depends_on:
-      - broker
-      - schema-registry
-      - connect
-      - ksqldb-server
+      connect:
+        condition: service_healthy
     ports:
       - "8989:8080"
     environment:
@@ -303,12 +308,28 @@ services:
                kafka-topics --create --topic messages --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
                kafka-console-producer --bootstrap-server broker:29092 --topic users < /data/users.json'"
 
+  kafka-init-connectors:
+    image: alpine/java:21
+    volumes:
+       - ./:/workspaces
+    command: "sh -c 'cd /workspaces && \
+              if [ \"$(ls -A kafka-connector 2>/dev/null | wc -l)\" -ge 2 ]; then echo \"kafka-connector has connectors, skipping init\"; exit 0; fi && \
+              rm -rf kafka-connector/* && \
+              cd kafka-random-source-connector && ./gradlew shadowJar && cd .. && \
+              cp ./kafka-random-source-connector/app/build/libs/*-all.jar kafka-connector && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.4.0.Final/debezium-connector-mysql-3.4.0.Final-plugin.tar.gz && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.4.0.Final/debezium-connector-postgres-3.4.0.Final-plugin.tar.gz && \
+              wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.9.2/confluentinc-kafka-connect-jdbc-10.9.2.zip && \
+              tar zxf debezium-connector-mysql* -C ./kafka-connector && \
+              tar zxf debezium-connector-postgres* -C ./kafka-connector && \
+              unzip confluentinc-kafka-connect-jdbc* -d ./kafka-connector && \
+              cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.9.2/lib/ && \
+              rm *-connect*'"
+
   create-connectors:
     image: ellerbrock/alpine-bash-curl-ssl
     container_name: create-connectors
     depends_on:
-      postgres:
-        condition: service_healthy
       connect:
         condition: service_healthy
     volumes:
@@ -368,3 +389,4 @@ services:
 volumes:
   pg-vol: {}
   mysql-vol: {}
+  kafka-vol: {}

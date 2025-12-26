@@ -36,23 +36,9 @@ services:
       - kafka-vol:/var/lib/kafka/data
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.1.1
-    hostname: schema-registry
-    container_name: schema-registry
-    depends_on:
-      broker:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
-    healthcheck:
-      test: [ "CMD", "curl", "localhost:8081" ]
-      interval: 20s
-      timeout: 10s
-      retries: 10
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    extends:
+      file: docker-compose-full.yml
+      service: schema-registry
 
   connect:
     image: cnfldemos/kafka-connect-datagen:0.6.7-8.0.0
@@ -87,121 +73,40 @@ services:
       - ./kafka-connector:/usr/share/kafka-connector
       - ./connectors:/connectors
 
+  control-center:
+    extends:
+      file: docker-compose-full.yml
+      service: control-center
+
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.1.1
-    hostname: ksqldb-server
-    container_name: ksqldb-server
-    depends_on:
-      schema-registry:
-        condition: service_healthy
-    ports:
-      - "8088:8088"
-    healthcheck:
-      test: [ "CMD", "curl", "localhost:8088" ]
-      interval: 20s
-      timeout: 10s
-      retries: 10
-    environment:
-      KSQL_CONFIG_DIR: "/etc/ksql"
-      KSQL_BOOTSTRAP_SERVERS: "broker:29092"
-      KSQL_HOST_NAME: ksqldb-server
-      KSQL_LISTENERS: "http://0.0.0.0:8088"
-      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
-      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
-      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
+    extends:
+      file: docker-compose-full.yml
+      service: ksqldb-server
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.2
-    container_name: kafka-ui
-    depends_on:
-      connect:
-        condition: service_healthy
-    ports:
-      - "8989:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
-      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: first
-      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://connect:8083
-      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
-      KAFKA_CLUSTERS_0_KSQLDBSERVER: http://ksqldb-server:8088
+    extends:
+      file: docker-compose-full.yml
+      service: kafka-ui
 
   kafka-init-topics:
-    image: confluentinc/cp-kafka:8.1.1
-    volumes:
-       - ./data:/data
-    depends_on:
-      - broker
-    command: "bash -c 'echo Waiting for Kafka to be ready... && \
-               kafka-topics --create --topic users --partitions 3 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
-               kafka-topics --create --topic messages --partitions 2 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092 && \
-               kafka-console-producer --bootstrap-server broker:29092 --topic users < /data/users.json'"
+    extends:
+      file: docker-compose-full.yml
+      service: kafka-init-topics
 
   kafka-init-connectors:
-    image: alpine/java:21
-    volumes:
-       - ./:/workspaces
-    command: "sh -c 'cd /workspaces && \
-              if [ \"$(ls -A kafka-connector 2>/dev/null | wc -l)\" -ge 2 ]; then echo \"kafka-connector has connectors, skipping init\"; exit 0; fi && \
-              rm -rf kafka-connector/* && \
-              cd kafka-random-source-connector && ./gradlew shadowJar && cd .. && \
-              cp ./kafka-random-source-connector/app/build/libs/*-all.jar kafka-connector && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.3.0.Final/debezium-connector-mysql-3.3.0.Final-plugin.tar.gz && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.3.0.Final/debezium-connector-postgres-3.3.0.Final-plugin.tar.gz && \
-              wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.8.4/confluentinc-kafka-connect-jdbc-10.8.4.zip && \
-              tar zxf debezium-connector-mysql* -C ./kafka-connector && \
-              tar zxf debezium-connector-postgres* -C ./kafka-connector && \
-              unzip confluentinc-kafka-connect-jdbc* -d ./kafka-connector && \
-              cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.8.4/lib/ && \
-              rm *-connect*'"
+    extends:
+      file: docker-compose-full.yml
+      service: kafka-init-connectors
 
   mysql:
-    image: mysql:9.5.0
-    hostname: mysql
-    container_name: mysql
-    command:
-      - '--character-set-server=utf8mb4'
-      - '--collation-server=utf8mb4_unicode_ci'
-      - '--default-time-zone=Asia/Seoul'
-      - '--secure-file-priv='
-      - '--sql_mode='
-      - '--server-id=1'
-      - '--max_allowed_packet=1073741824'
-      - '--log-bin=/var/log/mysql/bin.log'
-      - '--binlog_expire_logs_seconds=864000' # 10일 * 24시 * 60분 * 60초
-      - '--gtid-mode=ON'
-      - '--enforce-gtid-consistency=ON'
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-vol:/var/lib/mysql
-      - mysql-vol:/var/log/mysql
-      - ./data/mysqldb-init.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      MYSQL_DATABASE: mysqldb
-      MYSQL_ROOT_PASSWORD: root_pw123!
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: myuser_pw123!
+    extends:
+      file: docker-compose-full.yml
+      service: mysql
 
   postgres:
-    image: postgres:18.1
-    hostname: postgres
-    container_name: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - pg-vol:/var/lib/postgresql
-      - ./data/pgdb-init.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      POSTGRES_DB: pgdb
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pguser_pw123!
-      PG_WAL_LEVEL: logical
-      PG_MAX_REPLICATION_SLOTS: 10
-      PG_MAX_WAL_SENDERS: 5
+    extends:
+      file: docker-compose-full.yml
+      service: postgres
 
 volumes:
   pg-vol: {}
