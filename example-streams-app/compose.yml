@@ -2,7 +2,7 @@ services:
 
   broker:
     extends:
-      file: ../docker-compose.yml
+      file: ../docker-compose-full.yml
       service: broker
   control-center:
     extends:
