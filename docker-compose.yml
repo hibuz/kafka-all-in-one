@@ -45,7 +45,7 @@ services:
     hostname: connect
     container_name: connect
     depends_on:
-      ksqldb-server:
+      schema-registry:
         condition: service_healthy
     ports:
       - "8083:8083"
@@ -78,16 +78,6 @@ services:
       file: docker-compose-full.yml
       service: control-center
 
-  ksqldb-server:
-    extends:
-      file: docker-compose-full.yml
-      service: ksqldb-server
-
-  kafka-ui:
-    extends:
-      file: docker-compose-full.yml
-      service: kafka-ui
-
   kafka-init-topics:
     extends:
       file: docker-compose-full.yml
@@ -102,11 +92,6 @@ services:
     extends:
       file: docker-compose-full.yml
       service: mysql
-
-  postgres:
-    extends:
-      file: docker-compose-full.yml
-      service: postgres
 
 volumes:
   pg-vol: {}

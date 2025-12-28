@@ -1,7 +1,14 @@
 spring:
   kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      schema.registry.url: http://schema-registry:8081
+    streams:
+      application-id: price-monitor-app
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        # default value serde는 코드에서 명시적으로 설정합니다 (KafkaAvroSerde 사용)
     consumer:
-      bootstrap-servers: localhost:9092
       client-id: app1
       group-id: app-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

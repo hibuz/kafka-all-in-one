@@ -22,11 +22,18 @@ configurations {
 
 repositories {
   mavenCentral()
+  maven { url 'https://packages.confluent.io/maven/' }
+}
+
+ext {
+	set('avroSerializerVersion', '8.1.1')
+	set('dockerImage', 'ghcr.io/hibuz/streams-app')
 }
 
 dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-kafka'
   implementation 'org.apache.kafka:kafka-streams'
+  implementation "io.confluent:kafka-avro-serializer:${avroSerializerVersion}" // schema registry + avro serde
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   compileOnly 'org.projectlombok:lombok'
   annotationProcessor 'org.projectlombok:lombok'
@@ -36,7 +43,7 @@ dependencies {
 }
 
 tasks.named('bootBuildImage') {
-  imageName = 'ghcr.io/hibuz/streams-app'
+  imageName = "${dockerImage}"
   runImage = 'paketobuildpacks/ubuntu-noble-run'
 }
 
