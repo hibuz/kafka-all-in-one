@@ -27,14 +27,17 @@ repositories {
 }
 
 ext {
+  set('springDocVersion', '3.0.0')
 	set('avroSerializerVersion', '8.1.1')
 	set('dockerImage', 'ghcr.io/hibuz/example-producer-app')
 }
 
 dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.springframework.boot:spring-boot-starter-kafka'
   implementation 'org.apache.kafka:kafka-streams'
   implementation "io.confluent:kafka-avro-serializer:${avroSerializerVersion}" // schema registry + avro serde
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocVersion}"
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   compileOnly 'org.projectlombok:lombok'
   annotationProcessor 'org.projectlombok:lombok'
