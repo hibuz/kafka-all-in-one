@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'org.springframework.boot' version '4.0.1'
   id 'io.spring.dependency-management' version '1.1.7'
+  id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
 }
 
 group = 'com.hibuz.kafka.example'
@@ -27,7 +28,7 @@ repositories {
 
 ext {
 	set('avroSerializerVersion', '8.1.1')
-	set('dockerImage', 'ghcr.io/hibuz/streams-app')
+	set('dockerImage', 'ghcr.io/hibuz/example-producer-app')
 }
 
 dependencies {
@@ -43,8 +44,7 @@ dependencies {
 }
 
 tasks.named('bootBuildImage') {
-  imageName = "${dockerImage}"
-  runImage = 'paketobuildpacks/ubuntu-noble-run'
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
 }
 
 tasks.named('test') {

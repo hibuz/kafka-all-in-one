@@ -13,7 +13,9 @@
           "vmware.vscode-boot-dev-pack"
         ],
         "settings": {
-          "locale": "en"
+          "locale": "en",
+          "java.compile.nullAnalysis.mode": "automatic",
+          "java.configuration.updateBuildConfiguration": "automatic"
         }
       }
     },

@@ -19,7 +19,7 @@ services:
   #  depends_on:
   #    - broker
   #  environment:
-  #    SPRING_PROFILES_ACTIVE: docker
+  #    SPRING_PROFILES_ACTIVE: prd
 
 volumes:
   kafka-vol: {}

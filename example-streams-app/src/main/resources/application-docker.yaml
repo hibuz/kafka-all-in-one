@@ -1,4 +1,0 @@
-spring:
-  kafka:
-    consumer:
-      bootstrap-servers: broker:29092

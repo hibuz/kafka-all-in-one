@@ -1,6 +1,8 @@
 spring:
+  profiles:
+    active: local
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: broker:29092
     properties:
       schema.registry.url: http://schema-registry:8081
     streams:
@@ -16,3 +18,20 @@ spring:
       auto-offset-reset: earliest
       properties:
         group.protocol: consumer
+  docker:
+    compose:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start-only
