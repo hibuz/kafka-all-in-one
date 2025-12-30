@@ -1,16 +1,16 @@
-# example-streams-app
+# example-producer-app
 
 한국어 (KR) / English (EN) 상세 설명
 
 ## 개요 / Overview
-- **KR**: 이 예제 애플리케이션은 로컬 Kafka 브로커에 연결되어 `test-topic` 토픽을 리스닝하는 Spring Boot 애플리케이션입니다. `DemoKafkaListener` 클래스는 동일 토픽에 대해 서로 다른 App(`app1`, `app2`)을 사용하여 각각 메시지를 수신하고 로그로 출력합니다.
-- **EN**: This example application is a Spring Boot app that connects to a local Kafka broker and listens to the `test-topic` topic. The `DemoKafkaListener` class uses two different consumer apps (`app1` and `app2`) so both listeners receive copies of messages and log them.
+- **KR**: 이 예제 애플리케이션은 로컬 Kafka 브로커에 연결되어 `payment-demo` 토픽으로 메시지를 전송하는 Spring Boot 애플리케이션입니다. `Receiver` 클래스는 디버그를 위한 컨슈머로, 동일 토픽에서 메시지를 수신하고 로그로 출력합니다.
+- **EN**: This example application is a Spring Boot app that connects to a local Kafka broker and sends messages to the `payment-demo` topic. The `Receiver` class acts as a debug consumer that listens to the same topic and logs received messages.
 
 ## 요구 사항 / Requirements
 - **Java**: Java 21 (build toolchain in `build.gradle` targets Java 21)
 - **Gradle Wrapper**: Use the included `./gradlew` wrapper
 - **Docker & docker compose**: For local Kafka and related services
-- **Ports used (host -> container)**: `9092` (Kafka), `8081` (Schema Registry), `8083` (Kafka Connect), `8088` (ksqlDB), `8989` (Kafka UI), `3306` (MySQL), `5432` (Postgres)
+- **Ports used (host -> container)**: `8080` (Spring Boot), `9092` (Kafka), `8081` (Schema Registry)
 
 ## 빠른 시작 / Quick Start
 
@@ -18,144 +18,35 @@
 
 ```bash
 ./gradlew :example-producer-app:bootRun
-
-
-[Consumer clientId=app1-0, groupId=app-group] Subscribed to topic(s): test-topic
-Member Y5-Nk5RORBqAWqaQtp-eKA with
-epoch 0 transitioned from UNSUBSCRIBED to JOINING
-epoch 1 transitioned from JOINING to RECONCILING
-  Reconciling assignment with local epoch 0
-  Adding newly assigned partitions: [test-topic-0, test-topic-1]
-epoch 1 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 1 transitioned from ACKNOWLEDGING to STABLE
-
-
-# 다른 컨슈머 join
-epoch 1 transitioned from STABLE to RECONCILING.
-  Reconciling assignment with local epoch 1
-  Revoke previously assigned partitions [test-topic-1]
-epoch 1 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 1 transitioned from ACKNOWLEDGING to STABLE
-epoch 3 transitioned from STABLE to RECONCILING
-  Reconciling assignment with local epoch 2
-  Added partitions (assigned - owned):       [test-topic-1]
-epoch 3 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 3 transitioned from ACKNOWLEDGING to STABLE
-epoch 3 transitioned from STABLE to RECONCILING
-  Reconciling assignment with local epoch 3
-  Revoked partitions (owned - assigned):     [test-topic-1]
-epoch 3 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 3 transitioned from ACKNOWLEDGING to STABLE
 ```
 
-3. 애플리케이션이 브로커(`localhost:9092`)에 연결되면 `DemoKafkaListener`가 `test-topic` 토픽을 리스닝합니다. 토픽이 없다면 compose 초기화 스크립트가 생성하지만, 수동으로 생성하려면 아래를 참고하세요.
+3. 애플리케이션이 브로커(`localhost:9092`)에 연결되면 `Receiver`가 `payment-demo` 토픽을 리스닝합니다.
 
 ## 빌드 및 실행(대안) / Build & Run (alternate)
 
 - 빌드 후 JAR 실행:
 
 ```bash
-./gradlew :example-streams-app:clean :example-streams-app:build
-java -jar example-streams-app/build/libs/*example-streams-app*.jar --spring.kafka.consumer.client-id=app2
-
-[Consumer clientId=app2-0, groupId=app-group] Subscribed to topic(s): test-topic
-Member L_Pz2GCqSdiE2-LpFDz4bw with
-epoch 0 transitioned from UNSUBSCRIBED to JOINING
-  Reconciling assignment with local epoch 0
-  Added partitions (assigned - owned):       []
-epoch 4 transitioned from JOINING to RECONCILING
-epoch 4 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 4 transitioned from ACKNOWLEDGING to STABLE
-epoch 4 transitioned from STABLE to RECONCILING
-  Reconciling assignment with local epoch 1
-  Adding newly assigned partitions: [test-topic-1]
-epoch 4 transitioned from RECONCILING to ACKNOWLEDGING
-epoch 4 transitioned from ACKNOWLEDGING to STABLE
+./gradlew :example-producer-app:clean :example-producer-app:build
+java -jar example-producer-app/build/libs/*example-producer-app*.jar
 ```
 
 - 컨테이너 이미지 생성 (Paketo buildpacks 사용 설정이 `build.gradle`에 있음):
 
 ```bash
-./gradlew :example-streams-app:bootBuildImage
+./gradlew :example-producer-app:bootBuildImage
 ```
 
-## 테스트: `test-topic` 토픽으로 메시지 보내기 / Test: send messages to `test-topic` topic
+## 테스트: `payment-demo` 토픽으로 메시지 보내기 / Test: send messages to `payment-demo` topic
 
-1. Docker 내부에서 Kafka 콘솔 프로듀서를 사용 (가장 쉬운 방법):
+1. cURL을 사용해 HTTP 엔드포인트로 메시지 전송:
 
 ```bash
-# Kafka 컨테이너 이름은 docker-compose 설정에 따라 다릅니다. 예: kafka
-docker compose -f example-streams-app/compose.yml exec -it broker bash
-
-# 그룹 리스트 조회 / check consumer groups
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --list --state (stable,empty)
-GROUP                     STATE
-app-group                 Stable
-
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --list --type (classic,consumer)
-GROUP                     TYPE
-app-group                 Consumer
-
-[appuser@broker ~]$ kafka-console-producer --bootstrap-server localhost:9092 --topic test-topic
-> Hello from CLI
-> Hi there!
-
-# 그룹 상태 조회 / check group status
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group --state --verbose
-GROUP           COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE                GROUP-EPOCH     TARGET-ASSIGNMENT-EPOCH   #MEMBERS
-app-group       localhost:9092  (1)       uniform              Stable               2               2                         2
-
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group --members --verbose
-GROUP           CONSUMER-ID            HOST            CLIENT-ID       #PARTITIONS     CURRENT-EPOCH   CURRENT-ASSIGNMENT   TARGET-EPOCH    TARGET-ASSIGNMENT   
-app-group       L_Pz2GCqSdiE2cd-LpFDz4bw /172.18.0.1   app2-0          1               4               test-topic:1         4               test-topic:1
-app-group       Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0          1               4               test-topic:0         4               test-topic:0
-
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group
-GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID            HOST            CLIENT-ID
-app-group       test-topic      0          1               1               0               Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0
-app-group       test-topic      1          1               1               0               L_Pz2GCqSdiE2-LpFDz4bw /172.18.0.1     app2-0
-
-# 그룹 삭제 (옵션) / delete group (optional)
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --delete --group app-group
-
+curl -X POST 127.0.0.1:8080/kafka/payment?amount=1
 ```
 
-2. 로컬 터미널에서 `kcat` 혹은 다른 Kafka 클라이언트를 사용해도 됩니다.
-
-3. 예상 로그 출력 (애플리케이션 로그):
-
+2. 예상 로그 출력 (애플리케이션 로그):
 ```
-# app1
-INFO  - Received message at app1, p-0, offset-0: Hello from CLI
-INFO  - Received message at app2, p-1, offset-0: Hi there!
+INFO : Received message: id-init0, amount-10.0
+INFO : Received message: id-demo-web-0, amount-1.0
 ```
-
-두 리스너는 같은 토픽을 서로 다른 consumer group으로 구독하고 있으므로 각 리스너가 메시지를 독립적으로 수신합니다.
-
-## 데이터베이스 및 초기화 스크립트 / DB init
-- 초기 데이터베이스 SQL 파일은 `data/`에 있습니다 (`mysqldb-init.sql`, `pgdb-init.sql`). Compose 설정은 이 파일들을 사용해 컨테이너 시작 시 초기화합니다.
-
-## 문제 해결 / Troubleshooting
-- 브로커에 연결할 수 없음: `localhost:9092`가 열려 있는지, `docker compose ps`로 컨테이너가 기동 중인지 확인하세요.
-- 토픽 미생성: `docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --list`로 확인, 필요 시 생성:
-
-```bash
-docker compose exec broker kafka-topics --bootstrap-server localhost:9092 --create --topic test-topic --partitions 2 --replication-factor 1
-```
-
-- Java 버전 오류: 로컬 JDK가 Java 21인지 확인하세요. Gradle wrapper가 로컬 JDK를 사용하도록 설정되어 있습니다.
-
-## 파일 및 경로 요약 / Files & Useful Paths
-- 애플리케이션 소스: `example-streams-app/src/main/java/` (`DemoKafkaListener`는 `com.hibuz.kafka.streams.examples` 패키지)
-- 빌드 스크립트: `example-streams-app/build.gradle`
-- 커넥터 설정: `connectors/` 디렉터리
-- DB 초기화: `data/` 디렉터리
-- 전체 도커 구성: `docker-compose.yml`, `docker-compose-full.yml`
-
-## 추가 참고 / Notes
-- `DemoKafkaListener`는 다음과 같은 메서드를 제공합니다 (간단 요약):
-  - `listenWithApp(String message, ConsumerRecordMetadata metadata)` — `@KafkaListener(topics = "test-topic")`
-
----
-
-If you want, I can also add a short quick-start script or a sample `docker compose` command snippet that pre-creates topics and connectors automatically. Let me know and I'll append it.

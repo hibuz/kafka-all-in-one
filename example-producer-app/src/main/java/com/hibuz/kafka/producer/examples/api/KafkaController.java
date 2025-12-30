@@ -1,12 +1,11 @@
 package com.hibuz.kafka.producer.examples.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hibuz.kafka.producer.examples.Payment;
-import com.hibuz.kafka.producer.examples.sender.Sender;
+import com.hibuz.kafka.producer.examples.producer.Sender;
 
 import lombok.RequiredArgsConstructor;
 

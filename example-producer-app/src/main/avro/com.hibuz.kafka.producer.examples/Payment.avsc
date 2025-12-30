@@ -1,9 +1,18 @@
 {
- "namespace": "com.hibuz.kafka.producer.examples",
- "type": "record",
- "name": "Payment",
- "fields": [
-     {"name": "id", "type": "string"},
-     {"name": "amount", "type": "double"}
- ]
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "amount",
+      "type": "double"
+    }
+  ],
+  "name": "Payment",
+  "namespace": "com.hibuz.kafka.producer.examples",
+  "type": "record"
 }

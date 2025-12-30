@@ -8,12 +8,13 @@ spring:
     properties:
       schema.registry.url: http://schema-registry:8081
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
     consumer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       auto-offset-reset: earliest
+      properties:
+        group.protocol: consumer
+        specific.avro.reader: true
   docker:
     compose:
       enabled: false

@@ -1,17 +1,17 @@
-package com.hibuz.kafka.producer.examples.sender;
+package com.hibuz.kafka.producer.examples.producer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.hibuz.kafka.producer.examples.Payment;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class Sender {
 
     @Value("${spring.kafka.topic.avro}")
