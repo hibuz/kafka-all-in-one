@@ -4,14 +4,18 @@ services:
     extends:
       file: ../docker-compose-full.yml
       service: broker
-  control-center:
-    extends:
-      file: ../docker-compose-full.yml
-      service: control-center
   schema-registry:
     extends:
       file: ../docker-compose-full.yml
       service: schema-registry
+  control-center:
+    extends:
+      file: ../docker-compose-full.yml
+      service: control-center
+  kafka-ui:
+    extends:
+      file: ../docker-compose-full.yml
+      service: kafka-ui
 
   #example-producer-app:
   #  image: ghcr.io/hibuz/example-producer-app

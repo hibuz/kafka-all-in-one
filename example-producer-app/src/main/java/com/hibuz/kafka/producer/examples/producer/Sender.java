@@ -1,8 +1,6 @@
 package com.hibuz.kafka.producer.examples.producer;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +19,5 @@ public class Sender {
 
     public void send(String key, Payment value) {
         this.template.send(avroTopic, key, value);
-    }
-
-    @EventListener(ApplicationStartedEvent.class)
-    public void generate() {
-    Payment payment = Payment.newBuilder()
-        .setId("init0")
-        .setAmount(10.0)
-        .build();
-
-      send("init-key0", payment);
     }
 }

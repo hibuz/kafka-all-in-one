@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class Receiver {
 
-  @KafkaListener(id = "payment-debug-consumer", topics = "${spring.kafka.topic.avro}")
+  @KafkaListener(id = "payment-consumer", topics = "${spring.kafka.topic.avro}")
   public void listen(Payment value) {
       log.info("Received message: id-{}, amount-{}", value.getId(), value.getAmount());
   }
