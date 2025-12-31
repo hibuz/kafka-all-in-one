@@ -28,7 +28,7 @@
 
 ```bash
 ./gradlew :example-producer-app:clean :example-producer-app:build
-java -jar example-producer-app/build/libs/*example-producer-app*.jar
+java -jar example-producer-app/build/libs/*example-producer-app*.jar --spring.profiles.active=prd
 ```
 
 - 컨테이너 이미지 생성 (Paketo buildpacks 사용 설정이 `build.gradle`에 있음):
