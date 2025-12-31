@@ -13,9 +13,16 @@ services:
       file: ../docker-compose-full.yml
       service: schema-registry
 
+  #example-producer-app:
+  #  image: ghcr.io/hibuz/example-producer-app
+  #  container_name: example-producer-app
+  #  depends_on:
+  #    - broker
+  #  environment:
+  #    SPRING_PROFILES_ACTIVE: prd
   #example-streams-app:
-  #  image: ghcr.io/hibuz/streams-app
-  #  container_name: app
+  #  image: ghcr.io/hibuz/example-streams-app
+  #  container_name: example-streams-app
   #  depends_on:
   #    - broker
   #  environment:

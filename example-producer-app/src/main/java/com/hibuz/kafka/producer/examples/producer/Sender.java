@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.hibuz.kafka.producer.examples.Payment;
+import com.hibuz.kafka.core.examples.Payment;
 
 import lombok.RequiredArgsConstructor;
 

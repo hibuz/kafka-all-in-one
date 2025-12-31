@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hibuz.kafka.producer.examples.Payment;
+import com.hibuz.kafka.core.examples.Payment;
 import com.hibuz.kafka.producer.examples.producer.Sender;
 
 import lombok.RequiredArgsConstructor;

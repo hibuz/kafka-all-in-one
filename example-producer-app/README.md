@@ -35,6 +35,16 @@ java -jar example-producer-app/build/libs/*example-producer-app*.jar --spring.pr
 
 ```bash
 ./gradlew :example-producer-app:bootBuildImage
+
+docker images
+❯ docker images
+REPOSITORY                                           TAG       IMAGE ID       CREATED        SIZE
+paketobuildpacks/run-jammy-base                      latest    3df61c6af47a   3 weeks ago    173MB
+ghcr.io/hibuz/example-producer-app                   latest    31d90e3cb737   46 years ago   889MB
+
+docker login ghcr.io -u Dhibuz --password <TOKEN>
+
+docker push ghcr.io/hibuz/example-producer-app:latest
 ```
 
 ## 테스트: `payment-demo` 토픽으로 메시지 보내기 / Test: send messages to `payment-demo` topic

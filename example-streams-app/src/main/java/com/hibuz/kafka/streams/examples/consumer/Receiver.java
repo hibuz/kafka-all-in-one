@@ -1,4 +1,4 @@
-package com.hibuz.kafka.producer.examples.consumer;
+package com.hibuz.kafka.streams.examples.consumer;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

@@ -3,6 +3,8 @@ spring:
     active: local
   kafka:
     bootstrap-servers: broker:29092
+    topic:
+      avro: payment-demo
     properties:
       schema.registry.url: http://schema-registry:8081
     streams:
@@ -13,11 +15,11 @@ spring:
     consumer:
       client-id: app1
       group-id: app-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       auto-offset-reset: earliest
       properties:
         group.protocol: consumer
+        specific.avro.reader: true
   docker:
     compose:
       enabled: false
