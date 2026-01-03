@@ -20,7 +20,7 @@
 ./gradlew :example-streams-app:bootRun
 
 
-[Consumer clientId=app1-0, groupId=app-group] Subscribed to topic(s): test-topic
+[Consumer clientId=app1-0, groupId=test-group] Subscribed to topic(s): test-topic
 Member Y5-Nk5RORBqAWqaQtp-eKA with
 epoch 0 transitioned from UNSUBSCRIBED to JOINING
 epoch 1 transitioned from JOINING to RECONCILING
@@ -58,7 +58,7 @@ epoch 3 transitioned from ACKNOWLEDGING to STABLE
 ./gradlew :example-streams-app:clean :example-streams-app:build
 java -jar example-streams-app/build/libs/*example-streams-app*.jar --spring.kafka.consumer.client-id=app2
 
-[Consumer clientId=app2-0, groupId=app-group] Subscribed to topic(s): test-topic
+[Consumer clientId=app2-0, groupId=test-group] Subscribed to topic(s): test-topic
 Member L_Pz2GCqSdiE2-LpFDz4bw with
 epoch 0 transitioned from UNSUBSCRIBED to JOINING
   Reconciling assignment with local epoch 0
@@ -90,35 +90,33 @@ docker compose -f example-streams-app/compose.yml exec -it broker bash
 # 그룹 리스트 조회 / check consumer groups
 [appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --list --state (stable,empty)
 GROUP                     STATE
-app-group                 Stable
+test-group                Stable
 
 [appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --list --type (classic,consumer)
 GROUP                     TYPE
-app-group                 Consumer
+test-group                Consumer
 
 [appuser@broker ~]$ kafka-console-producer --bootstrap-server localhost:9092 --topic test-topic
 > Hello from CLI
 > Hi there!
 
 # 그룹 상태 조회 / check group status
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group --state --verbose
+[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group test-group --state --verbose
 GROUP           COORDINATOR (ID)          ASSIGNMENT-STRATEGY  STATE                GROUP-EPOCH     TARGET-ASSIGNMENT-EPOCH   #MEMBERS
-app-group       localhost:9092  (1)       uniform              Stable               2               2                         2
+test-group      localhost:9092  (1)       uniform              Stable               2               2                         2
 
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group --members --verbose
+[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group test-group --members --verbose
 GROUP           CONSUMER-ID            HOST            CLIENT-ID       #PARTITIONS     CURRENT-EPOCH   CURRENT-ASSIGNMENT   TARGET-EPOCH    TARGET-ASSIGNMENT   
-app-group       L_Pz2GCqSdiE2cd-LpFDz4bw /172.18.0.1   app2-0          1               4               test-topic:1         4               test-topic:1
-app-group       Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0          1               4               test-topic:0         4               test-topic:0
+test-group      L_Pz2GCqSdiE2cd-LpFDz4bw /172.18.0.1   app2-0          1               4               test-topic:1         4               test-topic:1
+test-group      Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0          1               4               test-topic:0         4               test-topic:0
 
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group app-group
+[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group test-group
 GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID            HOST            CLIENT-ID
-app-group       test-topic      0          1               1               0               Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0
-app-group       test-topic      1          1               1               0               L_Pz2GCqSdiE2-LpFDz4bw /172.18.0.1     app2-0
+test-group      test-topic      0          1               1               0               Y5-Nk5RORBqAWqaQtp-eKA /172.18.0.1     app1-0
+test-group      test-topic      1          1               1               0               L_Pz2GCqSdiE2-LpFDz4bw /172.18.0.1     app2-0
 
 # 그룹 삭제 (옵션) / delete group (optional)
-[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --delete --group app-group
-
-```
+[appuser@broker ~]$ kafka-consumer-groups --bootstrap-server localhost:9092 --delete --group test-group
 
 2. 로컬 터미널에서 `kcat` 혹은 다른 Kafka 클라이언트를 사용해도 됩니다.
 
@@ -126,8 +124,8 @@ app-group       test-topic      1          1               1               0    
 
 ```
 # app1
-INFO  - Received message at app1, p-0, offset-0: Hello from CLI
-INFO  - Received message at app2, p-1, offset-0: Hi there!
+INFO  - Received message at app1, p=0, offset=0: message=Hello from CLI
+INFO  - Received message at app2, p=1, offset=0: message=Hi there!
 ```
 
 두 리스너는 같은 토픽을 서로 다른 consumer group으로 구독하고 있으므로 각 리스너가 메시지를 독립적으로 수신합니다.

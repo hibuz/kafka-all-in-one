@@ -4,12 +4,14 @@ spring:
   kafka:
     bootstrap-servers: broker:29092
     topic:
-      avro: payment-demo
+      avro: transactions
     properties:
       schema.registry.url: http://schema-registry:8081
     producer:
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
     consumer:
+      client-id: app0
+      group-id: payment-debug-consumer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       auto-offset-reset: earliest
       properties:

@@ -15,8 +15,9 @@ public class DemoKafkaListener {
 	@Value("${spring.kafka.consumer.client-id}")
 	private String clientId;
 
-	@KafkaListener(topics = "test-topic")
+	@KafkaListener(id = "test-group", topics = "test-topic",
+				   properties = {"value.deserializer=org.apache.kafka.common.serialization.StringDeserializer"})
 	public void listenWithApp(String message, ConsumerRecordMetadata metadata) {
-		log.info("Received message at {}, p-{}, offset-{}: {}", clientId, metadata.partition(), metadata.offset(), message);
+		log.info("Received message at {}, p={}, offset={}: message={}", clientId, metadata.partition(), metadata.offset(), message);
 	}
 }

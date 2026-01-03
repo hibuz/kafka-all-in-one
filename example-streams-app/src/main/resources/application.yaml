@@ -4,7 +4,7 @@ spring:
   kafka:
     bootstrap-servers: broker:29092
     topic:
-      avro: payment-demo
+      avro: transactions
     properties:
       schema.registry.url: http://schema-registry:8081
     streams:
@@ -14,7 +14,7 @@ spring:
         # default value serde는 코드에서 명시적으로 설정합니다 (KafkaAvroSerde 사용)
     consumer:
       client-id: app1
-      group-id: app-group
+      group-id: payment-consumer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       auto-offset-reset: earliest
       properties:

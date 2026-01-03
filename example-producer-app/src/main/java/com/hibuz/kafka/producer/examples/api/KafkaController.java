@@ -19,13 +19,15 @@ public class KafkaController {
 
     @PostMapping("payment")
 
-    public void sendPayment(@RequestParam(defaultValue = "100.0") String amount,
-                            @RequestParam(defaultValue = "demo-web-region") String region) {
+    public void sendPayment(@RequestParam(defaultValue = "0.0") String amount,
+                            @RequestParam(defaultValue = "kr") String region,
+                            @RequestParam(defaultValue = "krw") String currency) {
+        double amt = Double.parseDouble(amount);
         Payment payment = Payment.newBuilder()
-                .setId("demo-web-0")
-                .setRegion3(region)
+                .setId("id0")
+                .setCurrency(currency)
                 .build();
 
-        sender.send("web-key1", payment);
+        sender.send("key0", payment);
     }
 }
