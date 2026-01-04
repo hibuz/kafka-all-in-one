@@ -37,10 +37,10 @@ java -jar example-producer-app/build/libs/*example-producer-app*.jar --spring.pr
 ./gradlew :example-producer-app:bootBuildImage
 
 docker images
-REPOSITORY                                           TAG       IMAGE ID       CREATED        SIZE
-paketobuildpacks/ubuntu-noble-run-tiny               0.0.47    9573df49a1c9   4 weeks ago    38.9MB
-paketobuildpacks/builder-noble-java-tiny             latest    7fc39dc25d0d   46 years ago   1.19GB
-ghcr.io/hibuz/example-producer-app                   latest    e6274cf4de43   46 years ago   755MB
+REPOSITORY                               TAG       IMAGE ID       CREATED         SIZE
+paketobuildpacks/run-jammy-tiny          latest    1ed9ae752c1e   3 weeks ago     42.2MB
+paketobuildpacks/builder-jammy-java-tiny latest    73b26a1444f8   46 years ago    1.13GB
+ghcr.io/hibuz/example-producer-app       latest    35c6dde7dde1   46 years ago    758MB
 
 docker login ghcr.io -u Dhibuz --password <TOKEN>
 

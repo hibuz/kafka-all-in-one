@@ -48,6 +48,7 @@ dependencies {
 
 tasks.named('bootBuildImage') {
   imageName = "${dockerImage}"
+  builder = 'paketobuildpacks/builder-jammy-java-tiny'
 }
 
 tasks.named('test') {
