@@ -25,7 +25,7 @@ public class KafkaController {
         double amt = Double.parseDouble(amount);
         Payment payment = Payment.newBuilder()
                 .setId("id0")
-                .setCurrency(currency)
+                .setAmount(amt)
                 .build();
 
         sender.send("key0", payment);

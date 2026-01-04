@@ -37,3 +37,4 @@ spring:
     compose:
       enabled: true
       lifecycle-management: start-only
+      file: compose.yml
