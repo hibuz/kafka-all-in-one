@@ -24,6 +24,7 @@
       "DOCKER_API_VERSION": "1.43"
     },
     "forwardPorts": [
+        2222,
         8080,
         8989,
         9021
