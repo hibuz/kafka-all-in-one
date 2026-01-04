@@ -4,6 +4,9 @@ services:
     extends:
       file: ../docker-compose-full.yml
       service: broker
+    environment:
+      CONFLUENT_METRICS_ENABLE: 'false'
+      KAFKA_CONFLUENT_TELEMETRY_EXPORTER_C3PLUSPLUS_ENABLED: 'false'
   schema-registry:
     extends:
       file: ../docker-compose-full.yml
@@ -12,25 +15,32 @@ services:
     extends:
       file: ../docker-compose-full.yml
       service: control-center
+    environment:
+      CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: ''
+      CONTROL_CENTER_KSQL_KSQLDB1_URL: ''
+      CONTROL_CENTER_PROMETHEUS_ENABLE: 'false'
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 12
   kafka-ui:
     extends:
       file: ../docker-compose-full.yml
       service: kafka-ui
 
-  #example-producer-app:
-  #  image: ghcr.io/hibuz/example-producer-app
-  #  container_name: example-producer-app
-  #  depends_on:
-  #    - broker
-  #  environment:
-  #    SPRING_PROFILES_ACTIVE: prd
-  #example-streams-app:
-  #  image: ghcr.io/hibuz/example-streams-app
-  #  container_name: example-streams-app
-  #  depends_on:
-  #    - broker
-  #  environment:
-  #    SPRING_PROFILES_ACTIVE: prd
+#  example-producer-app:
+#    image: ghcr.io/hibuz/example-producer-app
+#    container_name: example-producer-app
+#    depends_on:
+#      control-center:
+#        condition: service_healthy
+#    environment:
+#      SPRING_PROFILES_ACTIVE: prd
+#  example-streams-app:
+#    image: ghcr.io/hibuz/example-streams-app
+#    container_name: example-streams-app
+#    depends_on:
+#      control-center:
+#        condition: service_healthy
+#    environment:
+#      SPRING_PROFILES_ACTIVE: prd
 
 volumes:
   kafka-vol: {}
