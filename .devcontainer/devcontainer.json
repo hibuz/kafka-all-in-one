@@ -2,7 +2,9 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
       "ghcr.io/devcontainers/features/sshd:1": {},
-      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+        "version": "24.0"
+      },
       "ghcr.io/devcontainers/features/java:1": {
         "version": "21"
       }
@@ -20,10 +22,8 @@
         }
       }
     },
-    "remoteEnv": {
-      "DOCKER_API_VERSION": "1.43"
-    },
     "forwardPorts": [
+        2222,
         8080,
         8989,
         9021
