@@ -12,11 +12,11 @@ docker compose up
 docker exec -it mysql mysql -umyuser -pmyuser_pw123! -Dmysqldb
 
 mysql> select * from products;
-+-----+-------------+-----------------------+--------+--------+---------------------+
-| id  | name        | description           | weight | price  | create_at           |
-+-----+-------------+-----------------------+--------+--------+---------------------+
-| 101 | scooter     | Small 2-wheel scooter |   3.14 | 10.224 | 2025-11-22 00:07:23 |
-| 102 | car battery | 12V car battery       |    8.1 | 11.224 | 2025-11-22 00:07:23 |
++-----+-------+-------------+-----------------------+--------+--------+---------------------+
+| id  | sku   | name        | description           | weight | price  | create_at           |
++-----+-------+-------------+-----------------------+--------+--------+---------------------+
+|   1 | P-001 | scooter     | Small 2-wheel scooter |   3.14 | 10.224 | 2026-01-19 00:34:29 |
+|   2 | P-002 | car battery | 12V car battery       |    8.1 | 11.224 | 2026-01-19 00:34:29 |
 ...
 9 rows in set (0.000 sec)
 
@@ -149,10 +149,10 @@ docker exec -it postgres psql -U pguser -d pgdb
 
 # query PostgreSQL to see the data replicated from MySQL
 pgdb=# select * from products_out;
-id  |     name     |       description     |       weight        | price  |      create_at      
------+-------------+-----------------------+---------------------+--------+---------------------
- 101 | scooter     | Small 2-wheel scooter |   3.140000104904175 | 10.224 | 2025-11-22 00:07:23
- 102 | car battery | 12V car battery       |   8.100000381469727 | 11.224 | 2025-11-22 00:07:23
+id  |     name    |       description     |       weight        | price  |      create_at      
+----+-------------+-----------------------+---------------------+--------+---------------------
+ 1  | scooter     | Small 2-wheel scooter |   3.140000104904175 | 10.224 | 2025-11-22 00:07:23
+ 2  | car battery | 12V car battery       |   8.100000381469727 | 11.224 | 2025-11-22 00:07:23
  ...
  (9 rows)
 
@@ -160,7 +160,7 @@ id  |     name     |       description     |       weight        | price  |     
 docker exec -it mysql mysql -umyuser -pmyuser_pw123! -Dmysqldb
 
 # update a record in MySQL to see the change data capture (CDC) in action
-mysql> UPDATE products SET description='Large 2-wheel scooter', price=12.345, create_at=now() WHERE id=101;
+mysql> UPDATE products SET description='Large 2-wheel scooter', price=12.345, create_at=now() WHERE id=1;
 Query OK, 1 row affected (0.003 sec)
 Rows matched: 1  Changed: 1  Warnings: 0
 
@@ -168,7 +168,7 @@ Rows matched: 1  Changed: 1  Warnings: 0
 pgdb=# select * from products_out where id = 101;
  id  |  name   |      description      |      weight       | price  |      create_at      
 -----+---------+-----------------------+-------------------+--------+---------------------
- 101 | scooter | Large 2-wheel scooter | 3.140000104904175 | 12.345 | 2025-11-22 09:24:41
+ 1   | scooter | Large 2-wheel scooter | 3.140000104904175 | 12.345 | 2025-11-22 09:24:41
 ```
 
 

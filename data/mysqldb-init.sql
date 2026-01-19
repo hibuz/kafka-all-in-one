@@ -1,5 +1,8 @@
 use mysql;
 
+-- Catalog DB for Iceberg JDBC
+CREATE DATABASE IF NOT EXISTS iceberg_catalog;
+
 -- for debezium source connector
 -- SHOW GRANTS FOR 'myuser'@'%';
 GRANT SELECT, RELOAD, FLUSH_TABLES, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'myuser'@'%';
@@ -72,13 +75,14 @@ DROP TABLE IF EXISTS `products`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `sku` VARCHAR(64) NOT NULL UNIQUE,
   `name` varchar(255) NOT NULL,
   `description` varchar(512) DEFAULT NULL,
   `weight` float DEFAULT NULL,
   `price` decimal(10,3) NOT NULL,
   `create_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,7 +91,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (101,'scooter','Small 2-wheel scooter',3.14, 10.224, now()),(102,'car battery','12V car battery',8.1, 11.224, now()),(103,'12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8, 12.224, now()),(104,'hammer','12oz carpenter\'s hammer',0.75, 13.224, now()),(105,'hammer','14oz carpenter\'s hammer',0.875, 14.224, now()),(106,'hammer','16oz carpenters hammer',1, 15.224, now()),(107,'rocks','box of assorted rocks',5.3, 16.224, now()),(108,'jacket','water resistent black wind breaker',0.1, 17.224, now()),(109,'spare tire','24 inch spare tire',22.2, 18.224, now());
+INSERT INTO `products` VALUES (1,'P-001','scooter','Small 2-wheel scooter',3.14, 10.224, now()),(2,'P-002','car battery','12V car battery',8.1, 11.224, now()),(3,'P-003','12-pack drill bits','12-pack of drill bits with sizes ranging from #40 to #3',0.8, 12.224, now()),(4,'P-004','hammer','12oz carpenter\'s hammer',0.75, 13.224, now()),(5,'P-005','hammer','14oz carpenter\'s hammer',0.875, 14.224, now()),(6,'P-006','hammer','16oz carpenters hammer',1, 15.224, now()),(7,'P-007','rocks','box of assorted rocks',5.3, 16.224, now()),(8,'P-008','jacket','water resistent black wind breaker',0.1, 17.224, now()),(9,'P-009','spare tire','24 inch spare tire',22.2, 18.224, now());
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,6 +122,6 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (10001,'2016-01-16',1001,1,102),(10002,'2016-01-17',1002,2,105),(10003,'2016-02-19',1002,2,106),(10004,'2016-02-21',1003,1,107);
+INSERT INTO `orders` VALUES (10001,'2016-01-16',1001,1,2),(10002,'2016-01-17',1002,2,5),(10003,'2016-02-19',1002,2,6),(10004,'2016-02-21',1003,1,7);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;

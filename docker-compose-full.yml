@@ -345,6 +345,7 @@ services:
     image: mysql:9.5.0
     hostname: mysql
     container_name: mysql
+    tty: true
     command:
       - '--character-set-server=utf8mb4'
       - '--collation-server=utf8mb4_unicode_ci'
