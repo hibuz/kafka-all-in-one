@@ -46,3 +46,8 @@ services:
 
 volumes:
   kafka-vol: {}
+
+networks:
+  default:
+    driver: bridge
+    name: hibuz-net

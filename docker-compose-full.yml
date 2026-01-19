@@ -374,6 +374,7 @@ services:
     image: postgres:18.1
     hostname: postgres
     container_name: postgres
+    tty: true
     ports:
       - "5432:5432"
     volumes:
@@ -396,3 +397,8 @@ volumes:
   pg-vol: {}
   mysql-vol: {}
   kafka-vol: {}
+
+networks:
+  default:
+    driver: bridge
+    name: hibuz-net
