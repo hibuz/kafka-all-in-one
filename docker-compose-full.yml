@@ -282,7 +282,7 @@ services:
     image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     depends_on:
-      schema-registry:
+      broker:
         condition: service_healthy
     ports:
       - "8989:8080"
