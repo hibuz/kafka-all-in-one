@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.1.1
+    image: confluentinc/cp-server:8.2.0
     hostname: broker
     container_name: broker
     ports:
@@ -57,7 +57,7 @@ services:
       - kafka-vol:/var/lib/kafka/data
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.1.1
+    image: confluentinc/cp-schema-registry:8.2.0
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -168,7 +168,7 @@ services:
       CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.1.1
+    image: confluentinc/cp-ksqldb-server:8.2.0
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -196,7 +196,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:8.0.3
+    image: confluentinc/cp-ksqldb-cli:8.0.4
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -206,7 +206,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:8.0.3
+    image: confluentinc/ksqldb-examples:8.0.4
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -228,7 +228,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.1.1
+    image: confluentinc/cp-kafka-rest:8.2.0
     depends_on:
       - broker
       - schema-registry
@@ -301,7 +301,7 @@ services:
       #SPRING_SECURITY_USER_PASSWORD: pass
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.1.1
+    image: confluentinc/cp-server:8.2.0
     volumes:
        - ./data:/data
     depends_on:
@@ -322,8 +322,8 @@ services:
               rm -rf kafka-connector/* && \
               cd kafka-random-source-connector && ./gradlew shadowJar && cd .. && \
               cp ./kafka-random-source-connector/app/build/libs/*-all.jar kafka-connector && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.4.0.Final/debezium-connector-mysql-3.4.0.Final-plugin.tar.gz && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.4.0.Final/debezium-connector-postgres-3.4.0.Final-plugin.tar.gz && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.4.2.Final/debezium-connector-mysql-3.4.2.Final-plugin.tar.gz && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.4.2.Final/debezium-connector-postgres-3.4.2.Final-plugin.tar.gz && \
               wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.9.2/confluentinc-kafka-connect-jdbc-10.9.2.zip && \
               tar zxf debezium-connector-mysql* -C ./kafka-connector && \
               tar zxf debezium-connector-postgres* -C ./kafka-connector && \
@@ -342,7 +342,7 @@ services:
     command: bash -c '/connectors/start.sh'
 
   mysql:
-    image: mysql:9.5.0
+    image: mysql:9.6
     hostname: mysql
     container_name: mysql
     tty: true
@@ -371,7 +371,7 @@ services:
       MYSQL_PASSWORD: myuser_pw123!
 
   postgres:
-    image: postgres:18.1
+    image: postgres:18.3
     hostname: postgres
     container_name: postgres
     tty: true

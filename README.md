@@ -3,7 +3,7 @@ A simple Apache Kafka environment with Kafka Connect, Schema Registry, ksqlDB, K
 
 ### Run and check the environment
 ```bash
-# Confluent(Kafka): 8.1.0(4.1.x, 2025.10.15), 8.0.2(4.0.x), 7.9.3(3.9.x), 7.8.2(3.8.x)
+# Confluent(Kafka): 8.2.0(4.2.x, 2026.02.17), 8.0.2(4.0.x), 7.9.3(3.9.x), 7.8.2(3.8.x)
 
 # start containers (Add the -f docker-compose-full.yml option to create a sample connector automatically)
 docker compose up
@@ -66,12 +66,12 @@ curl connect:8083/connector-plugins | jq .
   {
     "class": "io.debezium.connector.mysql.MySqlConnector",
     "type": "source",
-    "version": "3.4.0.Final"
+    "version": "3.4.2.Final"
   },
   {
     "class": "io.debezium.connector.postgresql.PostgresConnector",
     "type": "source",
-    "version": "3.4.0.Final"
+    "version": "3.4.2.Final"
   },
   {
     "class": "org.apache.kafka.connect.mirror.MirrorCheckpointConnector",

@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-kafka:8.1.1
+    image: confluentinc/cp-kafka:8.2.0
     hostname: broker
     container_name: broker
     ports:
@@ -77,6 +77,11 @@ services:
     extends:
       file: docker-compose-full.yml
       service: control-center
+    environment:
+      CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: ''
+      CONTROL_CENTER_KSQL_KSQLDB1_URL: ''
+      CONTROL_CENTER_PROMETHEUS_ENABLE: 'false'
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 12
 
   kafka-init-topics:
     extends:
@@ -94,7 +99,6 @@ services:
       service: mysql
 
 volumes:
-  pg-vol: {}
   mysql-vol: {}
   kafka-vol: {}
 
