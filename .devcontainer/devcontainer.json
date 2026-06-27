@@ -1,14 +1,15 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "hibuz/zsh",
   "features": {
       "ghcr.io/devcontainers/features/sshd:1": {},
-      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-        "version": "24.0"
-      },
-      "ghcr.io/devcontainers/features/java:1": {
-        "version": "21"
-      }
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false
     },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25"
+    }
+  },
+  "remoteUser": "ubuntu",
   "customizations": {
       "vscode": {
         "extensions": [
