@@ -45,8 +45,7 @@ services:
     hostname: connect
     container_name: connect
     depends_on:
-      schema-registry:
-        condition: service_healthy
+      - schema-registry
     ports:
       - "8083:8083"
     healthcheck:

@@ -65,11 +65,6 @@ services:
         condition: service_healthy
     ports:
       - "8081:8081"
-    healthcheck:
-      test: [ "CMD", "curl", "localhost:8081" ]
-      interval: 20s
-      timeout: 10s
-      retries: 10
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
@@ -140,8 +135,7 @@ services:
     hostname: control-center
     container_name: control-center
     depends_on:
-      schema-registry:
-        condition: service_healthy
+      - schema-registry
     ports:
       - "9021:9021"
     healthcheck:
