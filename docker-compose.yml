@@ -73,15 +73,10 @@ services:
       - ./kafka-connector:/usr/share/kafka-connector
       - ./connectors:/connectors
 
-  control-center:
+  kafka-ui:
     extends:
       file: docker-compose-full.yml
-      service: control-center
-    environment:
-      CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: ''
-      CONTROL_CENTER_KSQL_KSQLDB1_URL: ''
-      CONTROL_CENTER_PROMETHEUS_ENABLE: 'false'
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 12
+      service: kafka-ui
 
   kafka-init-topics:
     extends:
