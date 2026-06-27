@@ -1,7 +1,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-server:8.2.0
+    image: confluentinc/cp-server:8.3.0
     hostname: broker
     container_name: broker
     ports:
@@ -57,7 +57,7 @@ services:
       - kafka-vol:/var/lib/kafka/data
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.2.0
+    image: confluentinc/cp-schema-registry:8.3.0
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -108,7 +108,7 @@ services:
       - ./kafka-connector:/usr/share/kafka-connector
 
   prometheus:
-    image: confluentinc/cp-enterprise-prometheus:2.3.0
+    image: confluentinc/cp-enterprise-prometheus:2.5.1
     hostname: cp-enterprise-prometheus
     container_name: prometheus
     volumes:
@@ -118,9 +118,10 @@ services:
     environment:
       CONFIG_PATH: "/mnt/config"
       SHOULD_LOG_TO_FILE: false
+      LOG_FILE: "/dev/null"
 
   alertmanager:
-    image: confluentinc/cp-enterprise-alertmanager:2.3.0
+    image: confluentinc/cp-enterprise-alertmanager:2.5.1
     hostname: cp-enterprise-alertmanager
     container_name: alertmanager
     depends_on:
@@ -132,18 +133,19 @@ services:
     environment:
       CONFIG_PATH: "/mnt/config"
       SHOULD_LOG_TO_FILE: false
+      LOG_FILE: "/dev/null"
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center-next-gen:2.3.0
+    image: confluentinc/cp-enterprise-control-center-next-gen:2.5.1
     hostname: control-center
     container_name: control-center
     depends_on:
       schema-registry:
         condition: service_healthy
     ports:
-      - "9021:8080"
+      - "9021:9021"
     healthcheck:
-      test: [ "CMD", "curl", "localhost:8080" ]
+      test: [ "CMD", "curl", "localhost:9021" ]
       interval: 20s
       timeout: 10s
       retries: 10
@@ -165,10 +167,10 @@ services:
       CONTROL_CENTER_PROMETHEUS_RULES_FILE: /mnt/config/trigger_rules-generated.yml
       CONTROL_CENTER_ALERTMANAGER_URL: http://alertmanager:9093
       CONTROL_CENTER_ALERTMANAGER_CONFIG_FILE: /mnt/config/alertmanager-generated.yml
-      CONTROL_CENTER_REST_LISTENERS: "http://0.0.0.0:8080"
+      PORT: 9021
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.2.0
+    image: confluentinc/cp-ksqldb-server:8.3.0
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -196,7 +198,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:8.0.4
+    image: confluentinc/cp-ksqldb-cli:8.0.6
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -206,7 +208,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:8.0.4
+    image: confluentinc/ksqldb-examples:8.0.6
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -228,7 +230,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.2.0
+    image: confluentinc/cp-kafka-rest:8.3.0
     depends_on:
       - broker
       - schema-registry
@@ -243,7 +245,7 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   flink-sql-client:
-    image: cnfldemos/flink-sql-client-kafka:1.19.1-scala_2.12-java17
+    image: cnfldemos/flink-sql-client-kafka:2.2.0-scala_2.12-java17
     depends_on:
       - flink-jobmanager
     hostname: flink-sql-client
@@ -252,7 +254,7 @@ services:
       FLINK_JOBMANAGER_HOST: flink-jobmanager
 
   flink-jobmanager:
-    image: cnfldemos/flink-kafka:1.19.1-scala_2.12-java17
+    image: cnfldemos/flink-kafka:2.2.0-scala_2.12-java17
     hostname: flink-jobmanager
     container_name: flink-jobmanager
     ports:
@@ -265,7 +267,7 @@ services:
       rest.bind-port: 9081
 
   flink-taskmanager:
-    image: cnfldemos/flink-kafka:1.19.1-scala_2.12-java17
+    image: cnfldemos/flink-kafka:2.2.0-scala_2.12-java17
     hostname: flink-taskmanager
     container_name: flink-taskmanager
     depends_on:
@@ -301,7 +303,7 @@ services:
       #SPRING_SECURITY_USER_PASSWORD: pass
 
   kafka-init-topics:
-    image: confluentinc/cp-server:8.2.0
+    image: confluentinc/cp-server:8.3.0
     volumes:
        - ./data:/data
     depends_on:
@@ -322,13 +324,13 @@ services:
               rm -rf kafka-connector/* && \
               cd kafka-random-source-connector && ./gradlew shadowJar && cd .. && \
               cp ./kafka-random-source-connector/app/build/libs/*-all.jar kafka-connector && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.4.2.Final/debezium-connector-mysql-3.4.2.Final-plugin.tar.gz && \
-              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.4.2.Final/debezium-connector-postgres-3.4.2.Final-plugin.tar.gz && \
-              wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.9.2/confluentinc-kafka-connect-jdbc-10.9.2.zip && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/3.5.2.Final/debezium-connector-mysql-3.5.2.Final-plugin.tar.gz && \
+              wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.5.2.Final/debezium-connector-postgres-3.5.2.Final-plugin.tar.gz && \
+              wget https://hub-downloads.confluent.io/api/plugins/confluentinc/kafka-connect-jdbc/versions/10.9.5/confluentinc-kafka-connect-jdbc-10.9.5.zip && \
               tar zxf debezium-connector-mysql* -C ./kafka-connector && \
               tar zxf debezium-connector-postgres* -C ./kafka-connector && \
               unzip confluentinc-kafka-connect-jdbc* -d ./kafka-connector && \
-              cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.9.2/lib/ && \
+              cp kafka-connector/debezium-connector-mysql/mysql-connector-j-*.jar kafka-connector/confluentinc-kafka-connect-jdbc-10.9.5/lib/ && \
               rm *-connect*'"
 
   create-connectors:
@@ -342,7 +344,7 @@ services:
     command: bash -c '/connectors/start.sh'
 
   mysql:
-    image: mysql:9.6
+    image: mysql:9.7
     hostname: mysql
     container_name: mysql
     tty: true
@@ -371,7 +373,7 @@ services:
       MYSQL_PASSWORD: myuser_pw123!
 
   postgres:
-    image: postgres:18.3
+    image: postgres:18.4
     hostname: postgres
     container_name: postgres
     tty: true
